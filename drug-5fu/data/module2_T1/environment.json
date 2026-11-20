@@ -1,0 +1,24 @@
+{
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "python": "3.13.16",
+  "started": "2026-11-19T08:25:14",
+  "packages": {
+    "skala": "2026.9",
+    "skala-cuda12x": "2026.9",
+    "gpu4pyscf-cuda12x": "1.8.1",
+    "pyscf": "2.14.0",
+    "torch": "2.14.1+cu130",
+    "cupy-cuda12x": "14.2.0",
+    "e3nn": "0.6.0",
+    "ase": "3.29.0"
+  },
+  "skala_pin": "2026.9",
+  "settings": {
+    "basis": "def2-tzvp",
+    "grid": 3,
+    "delta": 0.01,
+    "nfree": 2,
+    "hess_conv_tol": 1e-08,
+    "small_rho_cutoff": 0.0
+  }
+}

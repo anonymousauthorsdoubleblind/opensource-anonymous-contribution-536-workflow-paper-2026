@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="googlebot" content="noindex, nofollow">
+<meta name="bingbot" content="noindex, nofollow">
+<meta name="robots" content="noai, noimageai">
+<meta name="referrer" content="no-referrer">
+<title>The agent · 5-fluorouracil with Skala-1.1</title>
+<meta name="description" content="How the AI agent performed in the three 5-fluorouracil optimization runs: what it changed, when, why, and what it did not do.">
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="in">
+<a class="brand" href="index.html"><span class="dot">Sk</span>5-FU drug test</a>
+<nav class="main" aria-label="Sections"><a href="index.html">Home</a><a href="report.html">Plain report</a><a href="explainers.html">Explainers</a><a href="workflow.html">How it ran</a><a href="runlog.html">Run log</a><a href="agent.html" aria-current="page">The agent</a><a href="findings.html">Findings</a><a href="figures.html">Figures</a><a href="data.html">Data</a><a href="code.html">Code</a><a href="reproduce.html">Reproduce</a><a href="design.html">Design</a><a href="future.html">Future potential</a><a href="limits.html">Limits</a></nav>
+<a class="small" href="../index.html" title="The main demonstration site (annulenes and the four modules)">↩ Main site</a>
+</div></header>
+<main id="main">
+
+<div class="eyebrow">Agent performance · Module 1 · Skala-1.1 / def2-SVP · three real runs</div>
+<h1>What did the AI agent actually do?</h1>
+<p class="lead">It depends on how far from the answer the run started. In Run 1 (start already close) the agent changed one setting once and otherwise said "carry on". In Run 2 (3.1 eV uphill) it raised the step ceiling three times, and in Run 3 (6.4 eV uphill) four times. Every raise was kept, none needed undoing, and all three runs ended at the same structure.</p>
+
+<h2 id="how">How the agent is boxed in</h2>
+<div class="card ex"><svg viewBox="0 0 900 250" role="img" aria-label="Supervision loop: the optimizer takes steps, code measures them, the AI agent proposes a change, a guard checks it, a probation period keeps it or rolls it back">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--muted)"/></marker></defs>
+<rect x="10" y="20" width="160" height="70" rx="12" fill="var(--surface)" stroke="var(--navy)" stroke-width="2.5"/><text x="90.0" y="50" font-size="15" font-weight="700" text-anchor="middle">L-BFGS steps</text><text x="90.0" y="72" font-size="12.5" text-anchor="middle" style="fill:var(--muted)">on Skala-1.1 forces</text>
+<line x1="172" y1="55" x2="200" y2="55" stroke="var(--muted)" stroke-width="2" marker-end="url(#ah)"/>
+<rect x="202" y="20" width="160" height="70" rx="12" fill="var(--surface)" stroke="var(--navy)" stroke-width="2.5"/><text x="282.0" y="50" font-size="15" font-weight="700" text-anchor="middle">Monitor</text><text x="282.0" y="72" font-size="12.5" text-anchor="middle" style="fill:var(--muted)">code measures each step</text>
+<line x1="364" y1="55" x2="392" y2="55" stroke="var(--muted)" stroke-width="2" marker-end="url(#ah)"/>
+<rect x="394" y="20" width="160" height="70" rx="12" fill="var(--surface)" stroke="var(--skala)" stroke-width="2.5"/><text x="474.0" y="50" font-size="15" font-weight="700" text-anchor="middle">AI agent</text><text x="474.0" y="72" font-size="12.5" text-anchor="middle" style="fill:var(--muted)">picks one remedy</text>
+<line x1="556" y1="55" x2="584" y2="55" stroke="var(--muted)" stroke-width="2" marker-end="url(#ah)"/>
+<rect x="586" y="20" width="140" height="70" rx="12" fill="var(--surface)" stroke="var(--note)" stroke-width="2.5"/><text x="656.0" y="50" font-size="15" font-weight="700" text-anchor="middle">Guard</text><text x="656.0" y="72" font-size="12.5" text-anchor="middle" style="fill:var(--muted)">bounds the change</text>
+<line x1="728" y1="55" x2="752" y2="55" stroke="var(--muted)" stroke-width="2" marker-end="url(#ah)"/>
+<rect x="754" y="20" width="136" height="70" rx="12" fill="var(--surface)" stroke="var(--good)" stroke-width="2.5"/><text x="822.0" y="50" font-size="15" font-weight="700" text-anchor="middle">Probation</text><text x="822.0" y="72" font-size="12.5" text-anchor="middle" style="fill:var(--muted)">keep or roll back</text>
+<path d="M822 92 C 822 200, 90 200, 90 94" fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#ah)"/>
+<text x="456" y="198" font-size="13" text-anchor="middle" style="fill:var(--muted)">back to the optimizer with the kept (or restored) settings</text>
+<text x="456" y="236" font-size="12.5" text-anchor="middle" style="fill:var(--muted)">The agent never writes coordinates. It only chooses settings, such as the largest step size.</text>
+</svg></div>
+<p>The agent is a large language model (Gemini). The program asks it a question at fixed moments, and it answers by choosing one action from a fixed menu. It never moves atoms itself. Each change is tried for five steps ("probation") and is undone if it does not help.</p>
+
+<h2 id="glance">The three runs at a glance</h2>
+<div class="grid g3"><div class="card runcard"><h3>Run 1 · normal start</h3><dl>
+<dt>Start above the end</dt><dd>about 0.11 eV</dd><dt>Optimizer steps</dt><dd>16</dd><dt>Gradient evaluations</dt><dd>23</dd>
+<dt>Time (optimization)</dt><dd>4.2 min</dd><dt>Agent decisions</dt><dd>9</dd>
+<dt>Settings changed</dt><dd><b>1</b> (step ceiling 0.005 → 0.01 Å)</dd><dt>Undo needed</dt><dd>0</dd></dl></div><div class="card runcard"><h3>Run 2 · deformed start</h3><dl>
+<dt>Start above the end</dt><dd>3.11 eV</dd><dt>Optimizer steps</dt><dd>57</dd><dt>Gradient evaluations</dt><dd>64</dd>
+<dt>Time (optimization)</dt><dd>12.5 min</dd><dt>Agent decisions</dt><dd>11</dd>
+<dt>Settings changed</dt><dd><b>3</b> (step ceiling 0.005 → 0.01 → 0.02 → 0.04 Å)</dd><dt>Undo needed</dt><dd>0</dd></dl></div><div class="card runcard"><h3>Run 3 · very deformed start</h3><dl>
+<dt>Start above the end</dt><dd>6.38 eV</dd><dt>Optimizer steps</dt><dd>65</dd><dt>Gradient evaluations</dt><dd>72</dd>
+<dt>Time (optimization)</dt><dd>14.4 min</dd><dt>Agent decisions</dt><dd>12</dd>
+<dt>Settings changed</dt><dd><b>4</b> (step ceiling 0.005 → 0.01 → 0.02 → 0.04 → 0.05 Å)</dd><dt>Undo needed</dt><dd>0</dd></dl></div></div>
+<p style="margin-top:14px">Same end point: Run 2 finished 0.0072 Å and 0.51 meV from Run 1, and Run 3 finished 0.0051 Å and 0.29 meV from Run 1. All pass the same-structure rule set beforehand (under 0.02 Å and 10 meV).</p>
+
+<h2 id="moves">The agent's sensible moves</h2>
+<div class="grid g2">
+<div class="card"><span class="chip ok">Good move</span><h3>It saw when the step limit was holding the run back</h3><p>When every step hit the ceiling and the energy still fell on every step, the ceiling was setting the pace. The agent raised it, doubling each time: 0.005 → 0.01 → 0.02 → 0.04 Å.</p></div>
+<div class="card"><span class="chip ok">Good move</span><h3>It did more when the start was harder</h3><p>1, 3 and 4 changes for the starts at 0.11, 3.1 and 6.4 eV. On the easy start it mostly watched.</p></div>
+<div class="card"><span class="chip ok">Good move</span><h3>Every change passed its trial</h3><p>Each raise was checked over the next five steps. The leftover force fell every time, for example from 1.95 to 0.52 in Run 2 after the second raise. All eight changes were kept; none was rolled back.</p></div>
+<div class="card"><span class="chip ok">Good move</span><h3>It checked the valley and the final shape</h3><p>Before each run it confirmed there was only one valley to fall into. At the end it checked the ring was flat and the bonds intact before accepting the result.</p></div>
+</div>
+<div class="note"><p><b>Two honest limits.</b> Every change the agent made was one the program's built-in step calculator had already proposed, so a plain rule following that calculator would have made the same moves here. And the agent was never consulted during the slow, wobbly finishes, which is where most of the steps went in Runs 2 and 3. We cannot say whether the agent made any run faster: there is no run of the same starts without the agent to compare with.</p></div>
+
+<h2 id="run1">Run 1, normal start, step by step</h2>
+<p>Top: the leftover push on the atoms (must fall below the dashed target). Middle: energy still to lose. Bottom: how far the atoms moved each step against the allowed maximum. Diamonds are the agent's decisions; hover one to read it.</p>
+<div class="card"><div class="scrollx ex"><svg viewBox="0 0 940 600" role="img" aria-label="Run 1 · normal start: leftover force, energy still to lose and step size at every optimizer step, with the agent decisions marked">
+<rect x="697.4" y="20" width="207.6" height="550" fill="var(--bg)"/>
+<text x="801.2" y="590" font-size="12" text-anchor="middle" style="fill:var(--muted)">after target met</text>
+<text x="54" y="52" font-size="12" text-anchor="end" style="fill:var(--muted)">Agent</text><line x1="78" x2="905" y1="48" y2="48" stroke="var(--line)"/>
+<rect x="86.5" y="42" width="12" height="12" fill="var(--muted)" transform="rotate(45 92.5 48)"><title>Step 0: CONTINUE  (basin_choice)</title></rect>
+<rect x="100.5" y="42" width="12" height="12" fill="var(--muted)" transform="rotate(45 106.5 48)"><title>Step 0: CONTINUE  (pass_start)</title></rect>
+<rect x="305.3" y="39" width="18" height="18" fill="var(--note)" transform="rotate(45 314.3 48)"><title>Step 6: SET_PARAMS {'optimizer': 'lbfgs_mem20', 'maxstep': 0.01} (trigger)</title></rect>
+<line x1="314.3" x2="314.3" y1="58" y2="540" stroke="var(--note)" stroke-dasharray="3 4"/>
+<text x="314.3" y="30" font-size="12" font-weight="700" text-anchor="middle" style="fill:var(--note)">→ 0.01 Å</text>
+<rect x="630.5" y="42" width="12" height="12" fill="var(--muted)" transform="rotate(45 636.5 48)"><title>Step 15: CONTINUE  (pass_start)</title></rect>
+<rect x="720.0" y="42" width="12" height="12" fill="var(--muted)" transform="rotate(45 726.0 48)"><title>Step 16: CONTINUE  (pass_start)</title></rect>
+<rect x="753.6" y="42" width="12" height="12" fill="var(--muted)" transform="rotate(45 759.6 48)"><title>Step 16: CONTINUE  (pass_start)</title></rect>
+<rect x="787.3" y="42" width="12" height="12" fill="var(--muted)" transform="rotate(45 793.3 48)"><title>Step 16: CONTINUE  (pass_start)</title></rect>
+<rect x="821.0" y="42" width="12" height="12" fill="var(--muted)" transform="rotate(45 827.0 48)"><title>Step 16: CONTINUE  (pass_start)</title></rect>
+<rect x="854.6" y="42" width="12" height="12" fill="var(--muted)" transform="rotate(45 860.6 48)"><title>Step 16: CONTINUE  (final_check)</title></rect>
+<text x="78" y="87" font-size="13" font-weight="700" style="fill:var(--navy)">Leftover force (largest push on any atom, log scale)</text>
+<line x1="78" x2="905" y1="246.9" y2="246.9" stroke="var(--line)"/><text x="70" y="250.9" font-size="11.5" text-anchor="end" style="fill:var(--muted)">0.02</text>
+<line x1="78" x2="905" y1="216.4" y2="216.4" stroke="var(--line)"/><text x="70" y="220.4" font-size="11.5" text-anchor="end" style="fill:var(--muted)">0.05</text>
+<line x1="78" x2="905" y1="193.4" y2="193.4" stroke="var(--line)"/><text x="70" y="197.4" font-size="11.5" text-anchor="end" style="fill:var(--muted)">0.1</text>
+<line x1="78" x2="905" y1="170.3" y2="170.3" stroke="var(--line)"/><text x="70" y="174.3" font-size="11.5" text-anchor="end" style="fill:var(--muted)">0.2</text>
+<line x1="78" x2="905" y1="139.8" y2="139.8" stroke="var(--line)"/><text x="70" y="143.8" font-size="11.5" text-anchor="end" style="fill:var(--muted)">0.5</text>
+<line x1="78" x2="905" y1="116.8" y2="116.8" stroke="var(--line)"/><text x="70" y="120.8" font-size="11.5" text-anchor="end" style="fill:var(--muted)">1</text>
+<line x1="78" x2="905" y1="246.9" y2="246.9" stroke="var(--good)" stroke-dasharray="6 4" stroke-width="1.5"/>
+<text x="135.3" y="261.9" font-size="12" style="fill:var(--good)">target 0.02 (done when below)</text>
+<polyline points="135.3,106.2 171.1,115.0 206.9,124.7 242.7,135.5 278.5,148.7 314.3,164.6 350.1,184.0 385.9,186.5 421.7,209.0 457.5,217.2 493.3,219.8 529.1,221.7 564.9,222.8 600.7,225.1 636.5,247.7 672.3,256.5" fill="none" stroke="var(--navy)" stroke-width="2.2"/>
+<circle cx="314.3" cy="164.6" r="5" style="fill:var(--note)" stroke="var(--surface)" stroke-width="1.5"/>
+<text x="78" y="302" font-size="13" font-weight="700" style="fill:var(--skala)">Energy still to lose (meV)</text>
+<line x1="78" x2="905" y1="410.0" y2="410.0" stroke="var(--line)"/><text x="70" y="414.0" font-size="11.5" text-anchor="end" style="fill:var(--muted)">0</text>
+<line x1="78" x2="905" y1="366.3" y2="366.3" stroke="var(--line)"/><text x="70" y="370.3" font-size="11.5" text-anchor="end" style="fill:var(--muted)">50</text>
+<line x1="78" x2="905" y1="322.7" y2="322.7" stroke="var(--line)"/><text x="70" y="326.7" font-size="11.5" text-anchor="end" style="fill:var(--muted)">100</text>
+<polygon points="135.3,410.0 135.3,317.4 171.1,346.4 206.9,367.2 242.7,381.8 278.5,392.1 314.3,399.1 350.1,402.2 385.9,406.3 421.7,408.0 457.5,408.7 493.3,409.1 529.1,409.4 564.9,409.6 600.7,409.9 636.5,410.0 672.3,410.0 672.3,410.0" style="fill:var(--skala)" opacity=".14"/>
+<polyline points="135.3,317.4 171.1,346.4 206.9,367.2 242.7,381.8 278.5,392.1 314.3,399.1 350.1,402.2 385.9,406.3 421.7,408.0 457.5,408.7 493.3,409.1 529.1,409.4 564.9,409.6 600.7,409.9 636.5,410.0 672.3,410.0" fill="none" stroke="var(--skala)" stroke-width="2.4"/>
+<text x="143.3" y="321.4" font-size="12" style="fill:var(--skala)">106.04 meV at step 1</text>
+<text x="78" y="442" font-size="13" font-weight="700">Largest atom move per step (bars) against the allowed maximum (line), Å</text>
+<line x1="78" x2="905" y1="540.0" y2="540.0" stroke="var(--line)"/><text x="70" y="544.0" font-size="11.5" text-anchor="end" style="fill:var(--muted)">0</text>
+<line x1="78" x2="905" y1="499.8" y2="499.8" stroke="var(--line)"/><text x="70" y="503.8" font-size="11.5" text-anchor="end" style="fill:var(--muted)">0.005</text>
+<line x1="78" x2="905" y1="459.6" y2="459.6" stroke="var(--line)"/><text x="70" y="463.6" font-size="11.5" text-anchor="end" style="fill:var(--muted)">0.01</text>
+<rect x="125.3" y="499.8" width="20.0" height="40.2" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="161.1" y="499.8" width="20.0" height="40.2" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="196.9" y="499.8" width="20.0" height="40.2" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="232.7" y="499.8" width="20.0" height="40.2" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="268.5" y="499.8" width="20.0" height="40.2" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="304.3" y="499.8" width="20.0" height="40.2" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="340.1" y="512.7" width="20.0" height="27.3" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="375.9" y="483.9" width="20.0" height="56.1" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="411.7" y="503.5" width="20.0" height="36.5" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="447.5" y="517.1" width="20.0" height="22.9" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="483.3" y="525.3" width="20.0" height="14.7" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="519.1" y="525.5" width="20.0" height="14.5" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="554.9" y="522.9" width="20.0" height="17.1" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="590.7" y="522.7" width="20.0" height="17.3" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="626.5" y="530.3" width="20.0" height="9.7" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="662.3" y="537.6" width="20.0" height="2.4" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<polyline points="117.4,499.8 153.2,499.8 153.2,499.8 189.0,499.8 189.0,499.8 224.8,499.8 224.8,499.8 260.6,499.8 260.6,499.8 296.4,499.8 296.4,499.8 332.2,499.8 332.2,459.6 368.0,459.6 368.0,459.6 403.8,459.6 403.8,459.6 439.6,459.6 439.6,459.6 475.4,459.6 475.4,459.6 511.2,459.6 511.2,459.6 547.0,459.6 547.0,459.6 582.8,459.6 582.8,459.6 618.6,459.6 618.6,459.6 654.4,459.6 654.4,499.8 690.2,499.8" fill="none" stroke="var(--ink)" stroke-width="1.8"/>
+<line x1="78" x2="905" y1="552" y2="552" stroke="var(--line)"/><text x="70" y="568" font-size="11.5" text-anchor="end" style="fill:var(--muted)">step</text>
+<text x="135.3" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">1</text>
+<text x="171.1" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">2</text>
+<text x="206.9" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">3</text>
+<text x="242.7" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">4</text>
+<text x="278.5" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">5</text>
+<text x="314.3" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">6</text>
+<text x="350.1" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">7</text>
+<text x="385.9" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">8</text>
+<text x="421.7" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">9</text>
+<text x="457.5" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">10</text>
+<text x="493.3" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">11</text>
+<text x="529.1" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">12</text>
+<text x="564.9" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">13</text>
+<text x="600.7" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">14</text>
+<text x="636.5" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">15</text>
+<text x="672.3" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">16</text>
+</svg></div><div class="legendrow"><span><i style="background:var(--navy)"></i>Leftover force</span><span><i style="background:var(--skala)"></i>Energy still to lose</span><span><i style="background:var(--note)"></i>Atom move pinned at the ceiling</span><span><i style="background:var(--muted)"></i>Atom move below the ceiling</span><span><i style="background:var(--ink)"></i>Allowed maximum move</span><span><i class="d" style="background:var(--note)"></i>Agent changed a setting</span><span><i class="d" style="background:var(--muted)"></i>Agent said carry on</span></div></div>
+<div class="finding"><div class="n">1</div><div><h3>One sensible raise, with a good forecast</h3><p>Steps 1 to 6 all hit the 0.005 Å ceiling, so the agent doubled it. It predicted about 8 more steps and a push near 0.05 after 5 steps. Reality: 9 steps, and 0.045 after 5.</p></div></div>
+<div class="finding"><div class="n">2</div><div><h3>But it only mattered once</h3><p>After the raise, only step 8 moved further than the old ceiling. The molecule was already near the bottom of the valley, so there was little room to help. The agent also asked to set the optimizer to L-BFGS with memory 20, which it already was.</p></div></div>
+<div class="finding"><div class="n">3</div><div><h3>Check-ins after the finish</h3><p>The target was met at step 15. The remaining preset rounds each cost one calculation and one agent call.</p></div></div>
+
+<h2 id="run2">Run 2, deformed start (3.1 eV), step by step</h2>
+<div class="card"><div class="scrollx ex"><svg viewBox="0 0 940 600" role="img" aria-label="Run 2 · deformed start: leftover force, energy still to lose and step size at every optimizer step, with the agent decisions marked">
+<rect x="818.6" y="20" width="86.4" height="550" fill="var(--bg)"/>
+<text x="861.8" y="590" font-size="12" text-anchor="middle" style="fill:var(--muted)">after target met</text>
+<text x="54" y="52" font-size="12" text-anchor="end" style="fill:var(--muted)">Agent</text><line x1="78" x2="905" y1="48" y2="48" stroke="var(--line)"/>
+<rect x="72.6" y="42" width="12" height="12" fill="var(--muted)" transform="rotate(45 78.6 48)"><title>Step 0: CONTINUE  (basin_choice)</title></rect>
+<rect x="86.6" y="42" width="12" height="12" fill="var(--muted)" transform="rotate(45 92.6 48)"><title>Step 0: CONTINUE  (pass_start)</title></rect>
+<rect x="152.8" y="39" width="18" height="18" fill="var(--note)" transform="rotate(45 161.8 48)"><title>Step 6: SET_PARAMS {'maxstep': 0.01} (trigger)</title></rect>
+<line x1="161.8" x2="161.8" y1="58" y2="540" stroke="var(--note)" stroke-dasharray="3 4"/>
+<text x="161.8" y="30" font-size="12" font-weight="700" text-anchor="middle" style="fill:var(--note)">→ 0.01 Å</text>
+<rect x="216.4" y="39" width="18" height="18" fill="var(--note)" transform="rotate(45 225.4 48)"><title>Step 11: SET_PARAMS {'maxstep': 0.02} (trigger)</title></rect>
+<line x1="225.4" x2="225.4" y1="58" y2="540" stroke="var(--note)" stroke-dasharray="3 4"/>
+<text x="225.4" y="30" font-size="12" font-weight="700" text-anchor="middle" style="fill:var(--note)">→ 0.02 Å</text>
+<rect x="318.0" y="39" width="18" height="18" fill="var(--note)" transform="rotate(45 327.0 48)"><title>Step 19: SET_PARAMS {'maxstep': 0.04} (trigger)</title></rect>
+<line x1="327.0" x2="327.0" y1="58" y2="540" stroke="var(--note)" stroke-dasharray="3 4"/>
+<text x="327.0" y="30" font-size="12" font-weight="700" text-anchor="middle" style="fill:var(--note)">→ 0.04 Å</text>
+<rect x="822.8" y="42" width="12" height="12" fill="var(--muted)" transform="rotate(45 828.8 48)"><title>Step 57: CONTINUE  (pass_start)</title></rect>
+<rect x="834.8" y="42" width="12" height="12" fill="var(--muted)" transform="rotate(45 840.8 48)"><title>Step 57: CONTINUE  (pass_start)</title></rect>
+<rect x="846.9" y="42" width="12" height="12" fill="var(--muted)" transform="rotate(45 852.9 48)"><title>Step 57: CONTINUE  (pass_start)</title></rect>
+<rect x="859.0" y="42" width="12" height="12" fill="var(--muted)" transform="rotate(45 865.0 48)"><title>Step 57: CONTINUE  (pass_start)</title></rect>
+<rect x="871.1" y="42" width="12" height="12" fill="var(--muted)" transform="rotate(45 877.1 48)"><title>Step 57: CONTINUE  (pass_start)</title></rect>
+<rect x="883.1" y="42" width="12" height="12" fill="var(--muted)" transform="rotate(45 889.1 48)"><title>Step 57: CONTINUE  (final_check)</title></rect>
+<text x="78" y="87" font-size="13" font-weight="700" style="fill:var(--navy)">Leftover force (largest push on any atom, log scale)</text>
+<line x1="78" x2="905" y1="250.5" y2="250.5" stroke="var(--line)"/><text x="70" y="254.5" font-size="11.5" text-anchor="end" style="fill:var(--muted)">0.02</text>
+<line x1="78" x2="905" y1="224.8" y2="224.8" stroke="var(--line)"/><text x="70" y="228.8" font-size="11.5" text-anchor="end" style="fill:var(--muted)">0.05</text>
+<line x1="78" x2="905" y1="205.4" y2="205.4" stroke="var(--line)"/><text x="70" y="209.4" font-size="11.5" text-anchor="end" style="fill:var(--muted)">0.1</text>
+<line x1="78" x2="905" y1="185.9" y2="185.9" stroke="var(--line)"/><text x="70" y="189.9" font-size="11.5" text-anchor="end" style="fill:var(--muted)">0.2</text>
+<line x1="78" x2="905" y1="160.2" y2="160.2" stroke="var(--line)"/><text x="70" y="164.2" font-size="11.5" text-anchor="end" style="fill:var(--muted)">0.5</text>
+<line x1="78" x2="905" y1="140.7" y2="140.7" stroke="var(--line)"/><text x="70" y="144.7" font-size="11.5" text-anchor="end" style="fill:var(--muted)">1</text>
+<line x1="78" x2="905" y1="121.2" y2="121.2" stroke="var(--line)"/><text x="70" y="125.2" font-size="11.5" text-anchor="end" style="fill:var(--muted)">2</text>
+<line x1="78" x2="905" y1="95.5" y2="95.5" stroke="var(--line)"/><text x="70" y="99.5" font-size="11.5" text-anchor="end" style="fill:var(--muted)">5</text>
+<line x1="78" x2="905" y1="250.5" y2="250.5" stroke="var(--good)" stroke-dasharray="6 4" stroke-width="1.5"/>
+<text x="98.3" y="265.5" font-size="12" style="fill:var(--good)">target 0.02 (done when below)</text>
+<polyline points="98.3,104.4 111.0,105.5 123.7,106.9 136.4,107.9 149.1,109.0 161.8,110.1 174.5,112.2 187.3,114.5 200.0,116.9 212.7,119.3 225.4,121.9 238.1,127.6 250.8,134.3 263.5,142.7 276.2,153.4 288.9,159.2 301.6,162.0 314.3,164.3 327.0,166.6 339.7,160.5 352.4,158.2 365.1,162.0 377.8,175.1 390.5,182.4 403.2,187.4 415.9,189.0 428.6,191.2 441.3,186.6 454.0,188.4 466.7,193.2 479.4,189.3 492.1,190.3 504.8,189.8 517.5,201.2 530.2,207.2 542.9,208.6 555.7,202.6 568.4,212.5 581.1,226.5 593.8,224.0 606.5,211.1 619.2,211.1 631.9,225.9 644.6,233.2 657.3,233.2 670.0,221.0 682.7,219.6 695.4,231.1 708.1,229.8 720.8,228.5 733.5,221.2 746.2,220.8 758.9,238.6 771.6,244.2 784.3,250.3 797.0,248.6 809.7,255.6" fill="none" stroke="var(--navy)" stroke-width="2.2"/>
+<circle cx="161.8" cy="110.1" r="5" style="fill:var(--note)" stroke="var(--surface)" stroke-width="1.5"/>
+<circle cx="225.4" cy="121.9" r="5" style="fill:var(--note)" stroke="var(--surface)" stroke-width="1.5"/>
+<circle cx="327.0" cy="166.6" r="5" style="fill:var(--note)" stroke="var(--surface)" stroke-width="1.5"/>
+<text x="78" y="302" font-size="13" font-weight="700" style="fill:var(--skala)">Energy still to lose (eV)</text>
+<line x1="78" x2="905" y1="410.0" y2="410.0" stroke="var(--line)"/><text x="70" y="414.0" font-size="11.5" text-anchor="end" style="fill:var(--muted)">0</text>
+<line x1="78" x2="905" y1="378.5" y2="378.5" stroke="var(--line)"/><text x="70" y="382.5" font-size="11.5" text-anchor="end" style="fill:var(--muted)">1</text>
+<line x1="78" x2="905" y1="347.0" y2="347.0" stroke="var(--line)"/><text x="70" y="351.0" font-size="11.5" text-anchor="end" style="fill:var(--muted)">2</text>
+<line x1="78" x2="905" y1="315.6" y2="315.6" stroke="var(--line)"/><text x="70" y="319.6" font-size="11.5" text-anchor="end" style="fill:var(--muted)">3</text>
+<polygon points="98.3,410.0 98.3,317.4 111.0,322.4 123.7,326.9 136.4,331.2 149.1,335.2 161.8,339.0 174.5,346.3 187.3,353.1 200.0,359.3 212.7,364.9 225.4,369.9 238.1,378.4 250.8,385.2 263.5,390.5 276.2,394.5 288.9,397.3 301.6,399.2 314.3,400.5 327.0,401.5 339.7,402.8 352.4,403.9 365.1,405.1 377.8,406.2 390.5,406.8 403.2,407.1 415.9,407.5 428.6,407.9 441.3,408.3 454.0,408.6 466.7,408.8 479.4,409.0 492.1,409.2 504.8,409.3 517.5,409.5 530.2,409.5 542.9,409.6 555.7,409.7 568.4,409.7 581.1,409.7 593.8,409.8 606.5,409.8 619.2,409.8 631.9,409.8 644.6,409.8 657.3,409.9 670.0,409.9 682.7,409.9 695.4,409.9 708.1,409.9 720.8,409.9 733.5,409.9 746.2,410.0 758.9,410.0 771.6,410.0 784.3,410.0 797.0,410.0 809.7,410.0 809.7,410.0" style="fill:var(--skala)" opacity=".14"/>
+<polyline points="98.3,317.4 111.0,322.4 123.7,326.9 136.4,331.2 149.1,335.2 161.8,339.0 174.5,346.3 187.3,353.1 200.0,359.3 212.7,364.9 225.4,369.9 238.1,378.4 250.8,385.2 263.5,390.5 276.2,394.5 288.9,397.3 301.6,399.2 314.3,400.5 327.0,401.5 339.7,402.8 352.4,403.9 365.1,405.1 377.8,406.2 390.5,406.8 403.2,407.1 415.9,407.5 428.6,407.9 441.3,408.3 454.0,408.6 466.7,408.8 479.4,409.0 492.1,409.2 504.8,409.3 517.5,409.5 530.2,409.5 542.9,409.6 555.7,409.7 568.4,409.7 581.1,409.7 593.8,409.8 606.5,409.8 619.2,409.8 631.9,409.8 644.6,409.8 657.3,409.9 670.0,409.9 682.7,409.9 695.4,409.9 708.1,409.9 720.8,409.9 733.5,409.9 746.2,410.0 758.9,410.0 771.6,410.0 784.3,410.0 797.0,410.0 809.7,410.0" fill="none" stroke="var(--skala)" stroke-width="2.4"/>
+<text x="106.3" y="321.4" font-size="12" style="fill:var(--skala)">2.94 eV at step 1</text>
+<text x="78" y="442" font-size="13" font-weight="700">Largest atom move per step (bars) against the allowed maximum (line), Å</text>
+<line x1="78" x2="905" y1="540.0" y2="540.0" stroke="var(--line)"/><text x="70" y="544.0" font-size="11.5" text-anchor="end" style="fill:var(--muted)">0</text>
+<line x1="78" x2="905" y1="530.0" y2="530.0" stroke="var(--line)"/><text x="70" y="534.0" font-size="11.5" text-anchor="end" style="fill:var(--muted)">0.005</text>
+<line x1="78" x2="905" y1="459.6" y2="459.6" stroke="var(--line)"/><text x="70" y="463.6" font-size="11.5" text-anchor="end" style="fill:var(--muted)">0.04</text>
+<rect x="93.9" y="530.0" width="8.9" height="10.0" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="106.6" y="530.0" width="8.9" height="10.0" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="119.3" y="530.0" width="8.9" height="10.0" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="132.0" y="530.0" width="8.9" height="10.0" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="144.7" y="530.0" width="8.9" height="10.0" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="157.4" y="530.0" width="8.9" height="10.0" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="170.1" y="519.9" width="8.9" height="20.1" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="182.8" y="519.9" width="8.9" height="20.1" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="195.5" y="519.9" width="8.9" height="20.1" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="208.2" y="519.9" width="8.9" height="20.1" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="220.9" y="519.9" width="8.9" height="20.1" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="233.6" y="499.8" width="8.9" height="40.2" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="246.3" y="499.8" width="8.9" height="40.2" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="259.0" y="499.8" width="8.9" height="40.2" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="271.7" y="499.8" width="8.9" height="40.2" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="284.4" y="499.8" width="8.9" height="40.2" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="297.1" y="499.8" width="8.9" height="40.2" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="309.8" y="499.8" width="8.9" height="40.2" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="322.5" y="499.8" width="8.9" height="40.2" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="335.2" y="459.6" width="8.9" height="80.4" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="348.0" y="465.9" width="8.9" height="74.1" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="360.7" y="459.6" width="8.9" height="80.4" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="373.4" y="474.0" width="8.9" height="66.0" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="386.1" y="514.3" width="8.9" height="25.7" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="398.8" y="516.1" width="8.9" height="23.9" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="411.5" y="516.1" width="8.9" height="23.9" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="424.2" y="491.3" width="8.9" height="48.7" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="436.9" y="472.9" width="8.9" height="67.1" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="449.6" y="481.8" width="8.9" height="58.2" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="462.3" y="505.5" width="8.9" height="34.5" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="475.0" y="508.6" width="8.9" height="31.4" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="487.7" y="510.2" width="8.9" height="29.8" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="500.4" y="511.4" width="8.9" height="28.6" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="513.1" y="513.9" width="8.9" height="26.1" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="525.8" y="521.6" width="8.9" height="18.4" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="538.5" y="520.5" width="8.9" height="19.5" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="551.2" y="519.5" width="8.9" height="20.5" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="563.9" y="526.0" width="8.9" height="14.0" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="576.6" y="530.8" width="8.9" height="9.2" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="589.3" y="534.2" width="8.9" height="5.8" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="602.0" y="531.8" width="8.9" height="8.2" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="614.7" y="529.8" width="8.9" height="10.2" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="627.4" y="531.0" width="8.9" height="9.0" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="640.1" y="532.1" width="8.9" height="7.9" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="652.8" y="533.8" width="8.9" height="6.2" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="665.5" y="531.7" width="8.9" height="8.3" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="678.2" y="527.3" width="8.9" height="12.7" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="690.9" y="525.8" width="8.9" height="14.2" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="703.6" y="527.3" width="8.9" height="12.7" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="716.4" y="527.3" width="8.9" height="12.7" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="729.1" y="521.9" width="8.9" height="18.1" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="741.8" y="510.1" width="8.9" height="29.9" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="754.5" y="503.2" width="8.9" height="36.8" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="767.2" y="526.6" width="8.9" height="13.4" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="779.9" y="536.3" width="8.9" height="3.7" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="792.6" y="538.0" width="8.9" height="2.0" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="805.3" y="537.8" width="8.9" height="2.2" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<polyline points="92.0,530.0 104.7,530.0 104.7,530.0 117.4,530.0 117.4,530.0 130.1,530.0 130.1,530.0 142.8,530.0 142.8,530.0 155.5,530.0 155.5,530.0 168.2,530.0 168.2,519.9 180.9,519.9 180.9,519.9 193.6,519.9 193.6,519.9 206.3,519.9 206.3,519.9 219.0,519.9 219.0,519.9 231.7,519.9 231.7,499.8 244.4,499.8 244.4,499.8 257.1,499.8 257.1,499.8 269.8,499.8 269.8,499.8 282.5,499.8 282.5,499.8 295.2,499.8 295.2,499.8 307.9,499.8 307.9,499.8 320.6,499.8 320.6,499.8 333.3,499.8 333.3,459.6 346.0,459.6 346.0,459.6 358.7,459.6 358.7,459.6 371.5,459.6 371.5,459.6 384.2,459.6 384.2,459.6 396.9,459.6 396.9,459.6 409.6,459.6 409.6,459.6 422.3,459.6 422.3,459.6 435.0,459.6 435.0,459.6 447.7,459.6 447.7,459.6 460.4,459.6 460.4,459.6 473.1,459.6 473.1,459.6 485.8,459.6 485.8,459.6 498.5,459.6 498.5,459.6 511.2,459.6 511.2,459.6 523.9,459.6 523.9,459.6 536.6,459.6 536.6,459.6 549.3,459.6 549.3,459.6 562.0,459.6 562.0,459.6 574.7,459.6 574.7,459.6 587.4,459.6 587.4,459.6 600.1,459.6 600.1,459.6 612.8,459.6 612.8,459.6 625.5,459.6 625.5,459.6 638.2,459.6 638.2,459.6 650.9,459.6 650.9,459.6 663.6,459.6 663.6,459.6 676.3,459.6 676.3,459.6 689.0,459.6 689.0,459.6 701.7,459.6 701.7,459.6 714.4,459.6 714.4,459.6 727.2,459.6 727.2,459.6 739.9,459.6 739.9,459.6 752.6,459.6 752.6,459.6 765.3,459.6 765.3,459.6 778.0,459.6 778.0,459.6 790.7,459.6 790.7,459.6 803.4,459.6 803.4,459.6 816.1,459.6" fill="none" stroke="var(--ink)" stroke-width="1.8"/>
+<line x1="78" x2="905" y1="552" y2="552" stroke="var(--line)"/><text x="70" y="568" font-size="11.5" text-anchor="end" style="fill:var(--muted)">step</text>
+<text x="98.3" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">1</text>
+<text x="149.1" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">5</text>
+<text x="212.7" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">10</text>
+<text x="276.2" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">15</text>
+<text x="339.7" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">20</text>
+<text x="403.2" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">25</text>
+<text x="466.7" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">30</text>
+<text x="530.2" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">35</text>
+<text x="593.8" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">40</text>
+<text x="657.3" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">45</text>
+<text x="720.8" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">50</text>
+<text x="784.3" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">55</text>
+<text x="809.7" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">57</text>
+</svg></div><div class="legendrow"><span><i style="background:var(--navy)"></i>Leftover force</span><span><i style="background:var(--skala)"></i>Energy still to lose</span><span><i style="background:var(--note)"></i>Atom move pinned at the ceiling</span><span><i style="background:var(--muted)"></i>Atom move below the ceiling</span><span><i style="background:var(--ink)"></i>Allowed maximum move</span><span><i class="d" style="background:var(--note)"></i>Agent changed a setting</span><span><i class="d" style="background:var(--muted)"></i>Agent said carry on</span></div></div>
+<div class="finding"><div class="n">1</div><div><h3>The agent kept loosening the reins, and each time it helped</h3><p>For the first 19 steps every move hit the ceiling while the energy fell on every step. The agent raised the ceiling at steps 6, 11 and 19, doubling each time. Each raise was checked for 5 steps and kept. By step 19, 91% of the energy was already gone.</p></div></div>
+<div class="finding"><div class="n">2</div><div><h3>The last raise overshot a little</h3><p>Right after the ceiling went to 0.04 Å, the push on the atoms went up for two steps (0.40 to 0.54) before falling again. The energy still fell on every step, so nothing went wrong, but the atoms briefly swung past the best path.</p></div></div>
+<div class="finding"><div class="n">3</div><div><h3>Two thirds of the steps went on the last 9%</h3><p>Steps 20 to 57 (38 steps) removed the last 0.27 eV. In that stretch the push on the atoms went up and down many times while the energy crept down steadily. No warning rule fired, so the agent was never asked. This long tail is where a supervisor could have helped.</p></div></div>
+<div class="finding"><div class="n">4</div><div><h3>Its forecasts were too gloomy early and too rosy late</h3><p>At step 6 it expected 126 more steps (it took 51). At step 11 it expected the push to reach 1.2 after 5 steps (it reached 0.52). At step 19 it expected 18 more steps (it took 38), because it did not see the slow tail coming.</p></div></div>
+
+<h2 id="run3">Run 3, very deformed start (6.4 eV), step by step</h2>
+<div class="card"><div class="scrollx ex"><svg viewBox="0 0 940 600" role="img" aria-label="Run 3 · very deformed start: leftover force, energy still to lose and step size at every optimizer step, with the agent decisions marked">
+<rect x="828.1" y="20" width="76.9" height="550" fill="var(--bg)"/>
+<text x="866.5" y="590" font-size="12" text-anchor="middle" style="fill:var(--muted)">after target met</text>
+<text x="54" y="52" font-size="12" text-anchor="end" style="fill:var(--muted)">Agent</text><line x1="78" x2="905" y1="48" y2="48" stroke="var(--line)"/>
+<rect x="71.8" y="42" width="12" height="12" fill="var(--muted)" transform="rotate(45 77.8 48)"><title>Step 0: CONTINUE  (basin_choice)</title></rect>
+<rect x="85.8" y="42" width="12" height="12" fill="var(--muted)" transform="rotate(45 91.8 48)"><title>Step 0: CONTINUE  (pass_start)</title></rect>
+<rect x="143.7" y="39" width="18" height="18" fill="var(--note)" transform="rotate(45 152.7 48)"><title>Step 6: SET_PARAMS {'maxstep': 0.01, 'optimizer': 'lbfgs_mem20'} (trigger)</title></rect>
+<line x1="152.7" x2="152.7" y1="58" y2="540" stroke="var(--note)" stroke-dasharray="3 4"/>
+<text x="152.7" y="30" font-size="12" font-weight="700" text-anchor="middle" style="fill:var(--note)">→ 0.01 Å</text>
+<rect x="200.2" y="39" width="18" height="18" fill="var(--note)" transform="rotate(45 209.2 48)"><title>Step 11: SET_PARAMS {'maxstep': 0.02} (trigger)</title></rect>
+<line x1="209.2" x2="209.2" y1="58" y2="540" stroke="var(--note)" stroke-dasharray="3 4"/>
+<text x="209.2" y="30" font-size="12" font-weight="700" text-anchor="middle" style="fill:var(--note)">→ 0.02 Å</text>
+<rect x="256.8" y="39" width="18" height="18" fill="var(--note)" transform="rotate(45 265.8 48)"><title>Step 16: SET_PARAMS {'maxstep': 0.04} (trigger)</title></rect>
+<line x1="265.8" x2="265.8" y1="58" y2="540" stroke="var(--note)" stroke-dasharray="3 4"/>
+<text x="265.8" y="30" font-size="12" font-weight="700" text-anchor="middle" style="fill:var(--note)">→ 0.04 Å</text>
+<rect x="517.0" y="39" width="18" height="18" fill="var(--note)" transform="rotate(45 526.0 48)"><title>Step 39: SET_PARAMS {'maxstep': 0.05} (trigger)</title></rect>
+<line x1="526.0" x2="526.0" y1="58" y2="540" stroke="var(--note)" stroke-dasharray="3 4"/>
+<text x="526.0" y="30" font-size="12" font-weight="700" text-anchor="middle" style="fill:var(--note)">→ 0.05 Å</text>
+<rect x="831.1" y="42" width="12" height="12" fill="var(--muted)" transform="rotate(45 837.1 48)"><title>Step 65: CONTINUE  (pass_start)</title></rect>
+<rect x="841.9" y="42" width="12" height="12" fill="var(--muted)" transform="rotate(45 847.9 48)"><title>Step 65: CONTINUE  (pass_start)</title></rect>
+<rect x="852.6" y="42" width="12" height="12" fill="var(--muted)" transform="rotate(45 858.6 48)"><title>Step 65: CONTINUE  (pass_start)</title></rect>
+<rect x="863.4" y="42" width="12" height="12" fill="var(--muted)" transform="rotate(45 869.4 48)"><title>Step 65: CONTINUE  (pass_start)</title></rect>
+<rect x="874.1" y="42" width="12" height="12" fill="var(--muted)" transform="rotate(45 880.1 48)"><title>Step 65: CONTINUE  (pass_start)</title></rect>
+<rect x="884.9" y="42" width="12" height="12" fill="var(--muted)" transform="rotate(45 890.9 48)"><title>Step 65: CONTINUE  (final_check)</title></rect>
+<text x="78" y="87" font-size="13" font-weight="700" style="fill:var(--navy)">Leftover force (largest push on any atom, log scale)</text>
+<line x1="78" x2="905" y1="251.5" y2="251.5" stroke="var(--line)"/><text x="70" y="255.5" font-size="11.5" text-anchor="end" style="fill:var(--muted)">0.02</text>
+<line x1="78" x2="905" y1="226.9" y2="226.9" stroke="var(--line)"/><text x="70" y="230.9" font-size="11.5" text-anchor="end" style="fill:var(--muted)">0.05</text>
+<line x1="78" x2="905" y1="208.4" y2="208.4" stroke="var(--line)"/><text x="70" y="212.4" font-size="11.5" text-anchor="end" style="fill:var(--muted)">0.1</text>
+<line x1="78" x2="905" y1="189.8" y2="189.8" stroke="var(--line)"/><text x="70" y="193.8" font-size="11.5" text-anchor="end" style="fill:var(--muted)">0.2</text>
+<line x1="78" x2="905" y1="165.3" y2="165.3" stroke="var(--line)"/><text x="70" y="169.3" font-size="11.5" text-anchor="end" style="fill:var(--muted)">0.5</text>
+<line x1="78" x2="905" y1="146.8" y2="146.8" stroke="var(--line)"/><text x="70" y="150.8" font-size="11.5" text-anchor="end" style="fill:var(--muted)">1</text>
+<line x1="78" x2="905" y1="128.2" y2="128.2" stroke="var(--line)"/><text x="70" y="132.2" font-size="11.5" text-anchor="end" style="fill:var(--muted)">2</text>
+<line x1="78" x2="905" y1="103.7" y2="103.7" stroke="var(--line)"/><text x="70" y="107.7" font-size="11.5" text-anchor="end" style="fill:var(--muted)">5</text>
+<line x1="78" x2="905" y1="251.5" y2="251.5" stroke="var(--good)" stroke-dasharray="6 4" stroke-width="1.5"/>
+<text x="96.1" y="266.5" font-size="12" style="fill:var(--good)">target 0.02 (done when below)</text>
+<polyline points="96.1,104.0 107.4,104.8 118.7,105.5 130.0,106.1 141.4,106.7 152.7,107.3 164.0,109.5 175.3,111.8 186.6,113.8 197.9,115.8 209.2,117.7 220.5,121.3 231.9,125.1 243.2,128.8 254.5,132.6 265.8,136.0 277.1,144.6 288.4,156.7 299.7,162.2 311.1,160.5 322.4,163.2 333.7,171.0 345.0,173.9 356.3,181.5 367.6,182.7 378.9,182.6 390.2,174.9 401.6,175.3 412.9,173.0 424.2,173.4 435.5,186.2 446.8,188.0 458.1,178.2 469.4,174.5 480.8,177.1 492.1,184.4 503.4,186.3 514.7,190.1 526.0,194.7 537.3,195.4 548.6,194.7 559.9,210.7 571.3,212.6 582.6,212.2 593.9,216.8 605.2,230.1 616.5,238.9 627.8,244.8 639.1,240.8 650.5,241.5 661.8,248.7 673.1,250.9 684.4,248.3 695.7,237.8 707.0,239.6 718.3,237.5 729.6,237.9 741.0,237.4 752.3,236.8 763.6,241.1 774.9,246.4 786.2,250.3 797.5,245.8 808.8,247.9 820.2,255.1" fill="none" stroke="var(--navy)" stroke-width="2.2"/>
+<circle cx="152.7" cy="107.3" r="5" style="fill:var(--note)" stroke="var(--surface)" stroke-width="1.5"/>
+<circle cx="209.2" cy="117.7" r="5" style="fill:var(--note)" stroke="var(--surface)" stroke-width="1.5"/>
+<circle cx="265.8" cy="136.0" r="5" style="fill:var(--note)" stroke="var(--surface)" stroke-width="1.5"/>
+<circle cx="526.0" cy="194.7" r="5" style="fill:var(--note)" stroke="var(--surface)" stroke-width="1.5"/>
+<text x="78" y="302" font-size="13" font-weight="700" style="fill:var(--skala)">Energy still to lose (eV)</text>
+<line x1="78" x2="905" y1="410.0" y2="410.0" stroke="var(--line)"/><text x="70" y="414.0" font-size="11.5" text-anchor="end" style="fill:var(--muted)">0</text>
+<line x1="78" x2="905" y1="379.9" y2="379.9" stroke="var(--line)"/><text x="70" y="383.9" font-size="11.5" text-anchor="end" style="fill:var(--muted)">2</text>
+<line x1="78" x2="905" y1="349.8" y2="349.8" stroke="var(--line)"/><text x="70" y="353.8" font-size="11.5" text-anchor="end" style="fill:var(--muted)">4</text>
+<line x1="78" x2="905" y1="319.7" y2="319.7" stroke="var(--line)"/><text x="70" y="323.7" font-size="11.5" text-anchor="end" style="fill:var(--muted)">6</text>
+<polygon points="96.1,410.0 96.1,317.4 107.4,320.7 118.7,323.7 130.0,326.6 141.4,329.5 152.7,332.3 164.0,338.5 175.3,344.1 186.6,349.4 197.9,354.5 209.2,359.1 220.5,366.8 231.9,373.2 243.2,378.7 254.5,383.3 265.8,387.3 277.1,393.6 288.4,398.0 299.7,400.7 311.1,402.3 322.4,403.0 333.7,403.8 345.0,404.5 356.3,405.0 367.6,405.3 378.9,405.6 390.2,405.9 401.6,406.3 412.9,406.7 424.2,407.2 435.5,407.5 446.8,407.7 458.1,408.0 469.4,408.3 480.8,408.6 492.1,408.9 503.4,409.2 514.7,409.4 526.0,409.6 537.3,409.7 548.6,409.8 559.9,409.8 571.3,409.9 582.6,409.9 593.9,409.9 605.2,409.9 616.5,410.0 627.8,410.0 639.1,410.0 650.5,410.0 661.8,410.0 673.1,410.0 684.4,410.0 695.7,410.0 707.0,410.0 718.3,410.0 729.6,410.0 741.0,410.0 752.3,410.0 763.6,410.0 774.9,410.0 786.2,410.0 797.5,410.0 808.8,410.0 820.2,410.0 820.2,410.0" style="fill:var(--skala)" opacity=".14"/>
+<polyline points="96.1,317.4 107.4,320.7 118.7,323.7 130.0,326.6 141.4,329.5 152.7,332.3 164.0,338.5 175.3,344.1 186.6,349.4 197.9,354.5 209.2,359.1 220.5,366.8 231.9,373.2 243.2,378.7 254.5,383.3 265.8,387.3 277.1,393.6 288.4,398.0 299.7,400.7 311.1,402.3 322.4,403.0 333.7,403.8 345.0,404.5 356.3,405.0 367.6,405.3 378.9,405.6 390.2,405.9 401.6,406.3 412.9,406.7 424.2,407.2 435.5,407.5 446.8,407.7 458.1,408.0 469.4,408.3 480.8,408.6 492.1,408.9 503.4,409.2 514.7,409.4 526.0,409.6 537.3,409.7 548.6,409.8 559.9,409.8 571.3,409.9 582.6,409.9 593.9,409.9 605.2,409.9 616.5,410.0 627.8,410.0 639.1,410.0 650.5,410.0 661.8,410.0 673.1,410.0 684.4,410.0 695.7,410.0 707.0,410.0 718.3,410.0 729.6,410.0 741.0,410.0 752.3,410.0 763.6,410.0 774.9,410.0 786.2,410.0 797.5,410.0 808.8,410.0 820.2,410.0" fill="none" stroke="var(--skala)" stroke-width="2.4"/>
+<text x="104.1" y="321.4" font-size="12" style="fill:var(--skala)">6.15 eV at step 1</text>
+<text x="78" y="442" font-size="13" font-weight="700">Largest atom move per step (bars) against the allowed maximum (line), Å</text>
+<line x1="78" x2="905" y1="540.0" y2="540.0" stroke="var(--line)"/><text x="70" y="544.0" font-size="11.5" text-anchor="end" style="fill:var(--muted)">0</text>
+<line x1="78" x2="905" y1="532.0" y2="532.0" stroke="var(--line)"/><text x="70" y="536.0" font-size="11.5" text-anchor="end" style="fill:var(--muted)">0.005</text>
+<line x1="78" x2="905" y1="459.6" y2="459.6" stroke="var(--line)"/><text x="70" y="463.6" font-size="11.5" text-anchor="end" style="fill:var(--muted)">0.05</text>
+<rect x="92.1" y="532.0" width="7.9" height="8.0" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="103.5" y="532.0" width="7.9" height="8.0" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="114.8" y="532.0" width="7.9" height="8.0" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="126.1" y="532.0" width="7.9" height="8.0" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="137.4" y="532.0" width="7.9" height="8.0" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="148.7" y="532.0" width="7.9" height="8.0" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="160.0" y="523.9" width="7.9" height="16.1" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="171.3" y="523.9" width="7.9" height="16.1" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="182.6" y="523.9" width="7.9" height="16.1" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="194.0" y="523.9" width="7.9" height="16.1" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="205.3" y="523.9" width="7.9" height="16.1" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="216.6" y="507.9" width="7.9" height="32.1" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="227.9" y="507.9" width="7.9" height="32.1" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="239.2" y="507.9" width="7.9" height="32.1" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="250.5" y="507.9" width="7.9" height="32.1" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="261.8" y="507.9" width="7.9" height="32.1" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="273.2" y="475.7" width="7.9" height="64.3" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="284.5" y="475.7" width="7.9" height="64.3" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="295.8" y="475.7" width="7.9" height="64.3" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="307.1" y="475.7" width="7.9" height="64.3" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="318.4" y="499.1" width="7.9" height="40.9" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="329.7" y="488.1" width="7.9" height="51.9" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="341.0" y="481.0" width="7.9" height="59.0" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="352.3" y="496.1" width="7.9" height="43.9" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="363.7" y="514.2" width="7.9" height="25.8" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="375.0" y="518.6" width="7.9" height="21.4" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="386.3" y="507.9" width="7.9" height="32.1" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="397.6" y="492.0" width="7.9" height="48.0" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="408.9" y="476.9" width="7.9" height="63.1" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="420.2" y="475.7" width="7.9" height="64.3" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="431.5" y="488.8" width="7.9" height="51.2" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="442.9" y="507.8" width="7.9" height="32.2" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="454.2" y="503.1" width="7.9" height="36.9" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="465.5" y="483.7" width="7.9" height="56.3" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="476.8" y="475.7" width="7.9" height="64.3" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="488.1" y="475.7" width="7.9" height="64.3" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="499.4" y="475.7" width="7.9" height="64.3" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="510.7" y="475.7" width="7.9" height="64.3" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="522.0" y="475.7" width="7.9" height="64.3" style="fill:var(--note)" opacity=".95" rx="1"/>
+<rect x="533.4" y="516.1" width="7.9" height="23.9" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="544.7" y="501.6" width="7.9" height="38.4" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="556.0" y="514.7" width="7.9" height="25.3" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="567.3" y="530.7" width="7.9" height="9.3" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="578.6" y="531.8" width="7.9" height="8.2" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="589.9" y="522.1" width="7.9" height="17.9" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="601.2" y="516.9" width="7.9" height="23.1" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="612.6" y="527.1" width="7.9" height="12.9" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="623.9" y="531.7" width="7.9" height="8.3" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="635.2" y="533.1" width="7.9" height="6.9" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="646.5" y="534.5" width="7.9" height="5.5" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="657.8" y="536.3" width="7.9" height="3.7" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="669.1" y="536.0" width="7.9" height="4.0" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="680.4" y="536.7" width="7.9" height="3.3" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="691.7" y="534.8" width="7.9" height="5.2" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="703.1" y="534.7" width="7.9" height="5.3" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="714.4" y="534.3" width="7.9" height="5.7" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="725.7" y="533.2" width="7.9" height="6.8" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="737.0" y="533.7" width="7.9" height="6.3" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="748.3" y="532.7" width="7.9" height="7.3" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="759.6" y="533.1" width="7.9" height="6.9" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="770.9" y="533.4" width="7.9" height="6.6" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="782.3" y="533.6" width="7.9" height="6.4" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="793.6" y="532.6" width="7.9" height="7.4" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="804.9" y="533.5" width="7.9" height="6.5" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<rect x="816.2" y="534.1" width="7.9" height="5.9" style="fill:var(--muted)" opacity=".6" rx="1"/>
+<polyline points="90.4,532.0 101.8,532.0 101.8,532.0 113.1,532.0 113.1,532.0 124.4,532.0 124.4,532.0 135.7,532.0 135.7,532.0 147.0,532.0 147.0,532.0 158.3,532.0 158.3,523.9 169.6,523.9 169.6,523.9 181.0,523.9 181.0,523.9 192.3,523.9 192.3,523.9 203.6,523.9 203.6,523.9 214.9,523.9 214.9,507.9 226.2,507.9 226.2,507.9 237.5,507.9 237.5,507.9 248.8,507.9 248.8,507.9 260.1,507.9 260.1,507.9 271.5,507.9 271.5,475.7 282.8,475.7 282.8,475.7 294.1,475.7 294.1,475.7 305.4,475.7 305.4,475.7 316.7,475.7 316.7,475.7 328.0,475.7 328.0,475.7 339.3,475.7 339.3,475.7 350.6,475.7 350.6,475.7 362.0,475.7 362.0,475.7 373.3,475.7 373.3,475.7 384.6,475.7 384.6,475.7 395.9,475.7 395.9,475.7 407.2,475.7 407.2,475.7 418.5,475.7 418.5,475.7 429.8,475.7 429.8,475.7 441.2,475.7 441.2,475.7 452.5,475.7 452.5,475.7 463.8,475.7 463.8,475.7 475.1,475.7 475.1,475.7 486.4,475.7 486.4,475.7 497.7,475.7 497.7,475.7 509.0,475.7 509.0,475.7 520.3,475.7 520.3,475.7 531.7,475.7 531.7,459.6 543.0,459.6 543.0,459.6 554.3,459.6 554.3,459.6 565.6,459.6 565.6,459.6 576.9,459.6 576.9,459.6 588.2,459.6 588.2,459.6 599.5,459.6 599.5,459.6 610.9,459.6 610.9,459.6 622.2,459.6 622.2,459.6 633.5,459.6 633.5,459.6 644.8,459.6 644.8,459.6 656.1,459.6 656.1,459.6 667.4,459.6 667.4,459.6 678.7,459.6 678.7,459.6 690.0,459.6 690.0,459.6 701.4,459.6 701.4,459.6 712.7,459.6 712.7,459.6 724.0,459.6 724.0,459.6 735.3,459.6 735.3,459.6 746.6,459.6 746.6,459.6 757.9,459.6 757.9,459.6 769.2,459.6 769.2,459.6 780.6,459.6 780.6,459.6 791.9,459.6 791.9,459.6 803.2,459.6 803.2,459.6 814.5,459.6 814.5,459.6 825.8,459.6" fill="none" stroke="var(--ink)" stroke-width="1.8"/>
+<line x1="78" x2="905" y1="552" y2="552" stroke="var(--line)"/><text x="70" y="568" font-size="11.5" text-anchor="end" style="fill:var(--muted)">step</text>
+<text x="96.1" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">1</text>
+<text x="141.4" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">5</text>
+<text x="197.9" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">10</text>
+<text x="254.5" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">15</text>
+<text x="311.1" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">20</text>
+<text x="367.6" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">25</text>
+<text x="424.2" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">30</text>
+<text x="480.8" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">35</text>
+<text x="537.3" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">40</text>
+<text x="593.9" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">45</text>
+<text x="650.5" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">50</text>
+<text x="707.0" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">55</text>
+<text x="763.6" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">60</text>
+<text x="820.2" y="568" font-size="11.5" text-anchor="middle" style="fill:var(--muted)">65</text>
+</svg></div><div class="legendrow"><span><i style="background:var(--navy)"></i>Leftover force</span><span><i style="background:var(--skala)"></i>Energy still to lose</span><span><i style="background:var(--note)"></i>Atom move pinned at the ceiling</span><span><i style="background:var(--muted)"></i>Atom move below the ceiling</span><span><i style="background:var(--ink)"></i>Allowed maximum move</span><span><i class="d" style="background:var(--note)"></i>Agent changed a setting</span><span><i class="d" style="background:var(--muted)"></i>Agent said carry on</span></div></div>
+<div class="finding"><div class="n">1</div><div><h3>Same moves as Run 2, one more time</h3><p>The agent raised the ceiling at steps 6, 11 and 16 (to 0.01, 0.02, 0.04 Å). Each was kept. By step 20, 92% of the energy was gone.</p></div></div>
+<div class="finding"><div class="n">2</div><div><h3>A fourth raise that changed nothing in practice</h3><p>At step 39 the moves hit 0.04 Å again for five steps, so the agent raised the ceiling to 0.05 Å, the largest it is allowed. After that no step moved more than 0.024 Å, so the new ceiling was never reached. The change did no harm and was kept, but it did not do any work.</p></div></div>
+<div class="finding"><div class="n">3</div><div><h3>A long finish with a stall near the line</h3><p>Steps 21 to 65 (45 of 65 steps) removed the last 0.46 eV. Near the end the push sat just above the target for 13 steps before finally crossing. No warning rule fired for that stall, so the agent was not asked.</p></div></div>
+<div class="finding"><div class="n">4</div><div><h3>Forecasts: mixed again</h3><p>At step 6 it expected 180 more steps (it took 59). At step 16 it expected 32 (it took 49). At step 39 it expected the push to be 0.08 after 5 steps (it was 0.087, close) and 15 more steps (it took 26).</p></div></div>
+
+<h2 id="decisions">Every decision, in plain words</h2>
+<p>Each card is one question the program put to the agent, with the agent's own logged reason underneath. Repeated check-ins are grouped.</p>
+<h3>Run 1 · normal start</h3><div class="dcards"><div class="dcard"><div class="when"><span>Before step 1</span><span class="pill">carry on ×2</span></div><p>Is the molecule in the right valley, and are the starting settings sensible? Yes to both: there is only one valley, and the 0.005 Å step ceiling is kept.</p><p class="q">Agent: “There is only a single planar basin (id 0) found across 13 xTB seeds with current geometry already at 0.025 A RMSD and plane_rms_A=0.0037, so no basin switch is…”</p></div><div class="dcard chg"><div class="when"><span>Step 6</span><span class="pill">changed setting</span></div><p><b>Every step is hitting the ceiling and the energy keeps falling. Double the ceiling to 0.01 Å. Expect about 8 more steps.</b> Kept: force 0.24 → 0.045 over the next 5 steps.</p><p class="q">Agent: “Steps are fully pinned with cap_saturation=1.0, energy_falling_last5=5, and curvature_ratio=0.28, so maxstep is doubled to 0.01 and optimizer is set to lbfgs_mem20 to accelerate convergence.”</p></div><div class="dcard"><div class="when"><span>After the target was met</span><span class="pill">carry on ×4</span></div><p>Asked 4 more times at the start of each preset round. The force was already under the target, so nothing was left to do.</p></div><div class="dcard"><div class="when"><span>Final check</span><span class="pill">accept</span></div><p>Is the final shape sound? Flat ring, bonds intact, close to the reference. Accept it.</p><p class="q">Agent: “The final geometry in basin 0 is planar with an intact bond graph and low RMSD to the reference structure, so we continue to finalize the optimization.”</p></div></div>
+<h3>Run 2 · deformed start</h3><div class="dcards"><div class="dcard"><div class="when"><span>Before step 1</span><span class="pill">carry on ×2</span></div><p>Is the molecule in the right valley, and are the starting settings sensible? Yes to both: there is only one valley, and the 0.005 Å step ceiling is kept.</p><p class="q">Agent: “There is only one basin (id 0) found by the surrogate with n_seeds=13 and rmsd_to_planar_ref_A=0.0022, and we are already targeting basin 0.”</p></div><div class="dcard chg"><div class="when"><span>Step 6</span><span class="pill">changed setting</span></div><p><b>Every step is hitting the ceiling and the energy falls every step. Raise the ceiling to 0.01 Å. Expected: push about 2.4 after 5 steps, 126 steps to finish.</b> Kept: push 2.98 → 1.95 after 5 steps (better than expected).</p><p class="q">Agent: “Steps are pinned with cap_saturation=1.0 and energy falling on every step while fmax is far above target, so raising maxstep to 0.01 as recommended by step_advisor accelerates convergence without instability.”</p></div><div class="dcard chg"><div class="when"><span>Step 11</span><span class="pill">changed setting</span></div><p><b>Still pinned at the ceiling. Double it to 0.02 Å. Expected: push about 1.2 after 5 steps.</b> Kept: push 1.95 → 0.52 after 5 steps (much better than expected).</p><p class="q">Agent: “Steps remain pinned at the cap with cap_saturation=1.0 and energy falling on all recent steps while fmax is far above target, so doubling maxstep to 0.02 as recommended by step_advisor.”</p></div><div class="dcard chg"><div class="when"><span>Step 19</span><span class="pill">changed setting</span></div><p><b>Still pinned. Raise to 0.04 Å. Expected: push about 0.25 after 5 steps, 18 steps to finish.</b> Kept: push 0.40 → 0.23 after 5 steps as expected, but the finish took 38 steps, not 18.</p><p class="q">Agent: “Steps remain pinned at the cap with cap_saturation=1.0 and energy falling on all recent steps while fmax is far above target, so raising maxstep to 0.04 as advised by step_advisor.”</p></div><div class="dcard"><div class="when"><span>After the target was met</span><span class="pill">carry on ×5</span></div><p>Asked 5 more times at the start of each preset round. The force was already under the target, so nothing was left to do.</p></div><div class="dcard"><div class="when"><span>Final check</span><span class="pill">accept</span></div><p>Is the final shape sound? Flat ring, bonds intact, close to the reference. Accept it.</p><p class="q">Agent: “At final_check, the geometry is planar in target basin 0 with bond_graph_ok=true and rmsd_to_reference_A=0.019, so the optimization can conclude cleanly.”</p></div></div>
+<h3>Run 3 · very deformed start</h3><div class="dcards"><div class="dcard"><div class="when"><span>Before step 1</span><span class="pill">carry on ×2</span></div><p>Is the molecule in the right valley, and are the starting settings sensible? Yes to both: there is only one valley, and the 0.005 Å step ceiling is kept.</p><p class="q">Agent: “There is only a single candidate basin (id=0, found across 13 seeds), so no basin switch is needed and we can continue with the optimization.”</p></div><div class="dcard chg"><div class="when"><span>Step 6</span><span class="pill">changed setting</span></div><p><b>Every step is hitting the ceiling and the energy falls every step. Raise the ceiling to 0.01 Å. Expected: push about 3.5 after 5 steps, 180 steps to finish.</b> Kept: push 4.38 → 2.97 after 5 steps (better than expected).</p><p class="q">Agent: “With cap_saturation=1.0, energy_falling_last5=5, and curvature_ratio=0.02, steps are pinned with falling energy, so we switch optimizer to lbfgs_mem20 and double maxstep to 0.01 following step_advisor.”</p></div><div class="dcard chg"><div class="when"><span>Step 11</span><span class="pill">changed setting</span></div><p><b>Still pinned. Double the ceiling to 0.02 Å. Expected: push about 2 after 5 steps.</b> Kept: push 2.97 → 1.50 after 5 steps (better than expected).</p><p class="q">Agent: “Steps are pinned at cap_saturation=1.0 with energy falling on every step (energy_falling_last5=5) and fmax far above target, so we raise maxstep to 0.02 as recommended by step_advisor.”</p></div><div class="dcard chg"><div class="when"><span>Step 16</span><span class="pill">changed setting</span></div><p><b>Still pinned. Raise to 0.04 Å. Expected: push about 0.75 after 5 steps, 32 steps to finish.</b> Kept: push 1.50 → 0.54 after 5 steps (better than expected), but the finish took 49 steps.</p><p class="q">Agent: “With cap_saturation=1.0, energy_falling_last5=5, and fmax far above target, maxstep is raised from 0.02 to 0.04 A as recommended by step_advisor.”</p></div><div class="dcard chg"><div class="when"><span>Step 39</span><span class="pill">changed setting</span></div><p><b>Moves are hitting 0.04 Å again. Raise to 0.05 Å, the largest allowed. Expected: push 0.08 after 5 steps, 15 steps to finish.</b> Kept: push 0.167 → 0.087 after 5 steps as expected, but no later step used the extra room, and the finish took 26 steps.</p><p class="q">Agent: “With cap_saturation=1.0, energy_falling_last5=5, and fmax far above target (0.167 eV/A vs 0.02 eV/A), maxstep is raised from 0.04 to the ceiling of 0.05 A as recommended by step_advisor.”</p></div><div class="dcard"><div class="when"><span>After the target was met</span><span class="pill">carry on ×5</span></div><p>Asked 5 more times at the start of each preset round. The force was already under the target, so nothing was left to do.</p></div><div class="dcard"><div class="when"><span>Final check</span><span class="pill">accept</span></div><p>Is the final shape sound? Flat ring, bonds intact, close to the reference. Accept it.</p><p class="q">Agent: “The optimization has converged in the target planar basin 0 with an intact bond graph (structure.bond_graph_ok=true) and low planar RMS deviation (structure.pla…”</p></div></div>
+
+<h2 id="bottom">Bottom line</h2>
+<div class="ok-box"><p>On the easy start the agent mostly watched. On the hard starts it steered: it loosened the step ceiling whenever the atoms were being held back, all changes were kept, nothing needed undoing, and all three runs landed on the same structure.</p></div>
+<p>Two limits, again: every change was one the built-in calculator had already proposed, and the agent was not consulted during the long finishes. Whether an AI agent beats plain rules on harder molecules is an open question that the released code lets anyone test. <a href="future.html#agent">See future potential →</a></p>
+
+<h2 id="raw">Raw plots from the runs</h2>
+<p>Written by the notebooks during the runs, unedited.</p>
+<div class="grid g3"><figure class="fig"><a href="data/module1/run1_standard_start/agent_timeline.png"><img src="assets/img/run1_timeline.jpg" alt="Run 1: raw agent timeline" loading="lazy"></a><figcaption>Run 1: raw agent timeline<div class="dl">Download: <a href="data/module1/run1_standard_start/agent_timeline.png" download>PNG</a></div></figcaption></figure><figure class="fig"><a href="data/module1/run2_deformed_start_3.1eV/agent_timeline.png"><img src="assets/img/run2_timeline.jpg" alt="Run 2: raw agent timeline" loading="lazy"></a><figcaption>Run 2: raw agent timeline<div class="dl">Download: <a href="data/module1/run2_deformed_start_3.1eV/agent_timeline.png" download>PNG</a></div></figcaption></figure><figure class="fig"><a href="data/module1/run3_very_deformed_start_6.4eV/agent_timeline.png"><img src="assets/img/run3_timeline.jpg" alt="Run 3: raw agent timeline" loading="lazy"></a><figcaption>Run 3: raw agent timeline<div class="dl">Download: <a href="data/module1/run3_very_deformed_start_6.4eV/agent_timeline.png" download>PNG</a></div></figcaption></figure></div>
+<p class="small">Source: <code>data/module1/*/steps.json</code>, <code>events.json</code>, <code>summary.json</code> and <code>agent_transcript.md</code>. Agent quotes are copied from the logs; nothing here is simulated. Forces are in the units the Module 1 runs used, about 1.89 times smaller than true eV/Å. This scales the force numbers but does not change the shape of any curve or any decision. "Energy still to lose" is measured from each run's own final energy.</p>
+
+<div class="next"><a href="runlog.html">← Run log</a><a href="findings.html">Findings →</a></div>
+</main>
+<footer><div class="in">
+Code: MIT licence, Copyright (c) 2026 The Authors. Author names and affiliations are withheld for double-anonymous review.<br>
+Skala-1.1 is described in a preprint (arXiv:2506.14665, version 6) that has not been peer reviewed. The functional, its weights and its licence belong to its developers. This site links to it and does not redistribute it.<br>
+This site asks search engines not to index it.
+</div></footer>
+</body>
+</html>

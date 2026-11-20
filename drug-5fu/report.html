@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="googlebot" content="noindex, nofollow">
+<meta name="bingbot" content="noindex, nofollow">
+<meta name="robots" content="noai, noimageai">
+<meta name="referrer" content="no-referrer">
+<title>Plain report · 5-fluorouracil with Skala-1.1</title>
+<meta name="description" content="A findings report for a broad science audience: the infrared fingerprint of the cancer drug 5-fluorouracil, computed with Skala-1.1 and compared with the lab, at three reading levels.">
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="in">
+<a class="brand" href="index.html"><span class="dot">Sk</span>5-FU drug test</a>
+<nav class="main" aria-label="Sections"><a href="index.html">Home</a><a href="report.html" aria-current="page">Plain report</a><a href="explainers.html">Explainers</a><a href="workflow.html">How it ran</a><a href="runlog.html">Run log</a><a href="agent.html">The agent</a><a href="findings.html">Findings</a><a href="figures.html">Figures</a><a href="data.html">Data</a><a href="code.html">Code</a><a href="reproduce.html">Reproduce</a><a href="design.html">Design</a><a href="future.html">Future potential</a><a href="limits.html">Limits</a></nav>
+<a class="small" href="../index.html" title="The main demonstration site (annulenes and the four modules)">↩ Main site</a>
+</div></header>
+<main id="main">
+
+<div class="eyebrow">Findings report · for a broad science audience</div>
+<h1>A cancer drug's infrared fingerprint, predicted on a computer and compared with the lab</h1>
+<p class="lead">The same result told at three depths. Pick the level that suits you. All three say the same thing, and every number comes from a real run.</p>
+
+<div class="levels">
+<input type="radio" name="lv" id="lv1" checked><label for="lv1">Easy<small>any reader</small></label>
+<input type="radio" name="lv" id="lv2"><label for="lv2">Accessible<small>curious, outside the field</small></label>
+<input type="radio" name="lv" id="lv3"><label for="lv3">Scientific<small>the technical text</small></label>
+
+<div class="lv l1">
+<div class="who">Level 1 · easy version</div>
+<p class="hl">A new AI-trained method predicted the infrared fingerprint of a cancer drug, and it lined up with the lab measurement, even from a deliberately bent starting shape.</p>
+<p>Predicting how a drug behaves on a computer is far cheaper than testing it in a lab, but only if the method can be trusted. Skala is a recent method that uses machine learning to describe the physics of electrons. We tested it on 5-fluorouracil, a widely used cancer drug. We asked Skala to predict the drug's infrared fingerprint, the pattern of light a molecule absorbs as its atoms vibrate, and compared it with the fingerprint measured in a lab. The peaks fell in matching places, and the two strongest agreed within 4 units on a scale reaching 1800. We began from a deliberately distorted molecule, like the rough shapes produced in early drug screening, and Skala still settled on the same stable shape as from a normal start.</p>
+<p><b>Key points</b></p>
+<ul><li>Skala's predicted infrared fingerprint of the drug lines up with the one measured in the lab.</li>
+<li>A rough, bent starting shape still ends at the same stable shape.</li>
+<li>The result is a stable shape, and the checks are shown.</li></ul>
+</div>
+
+<div class="lv l2">
+<div class="who">Level 2 · accessible version</div>
+<p class="hl">The vibrations that a new machine-learning-based computational method, Skala, predicts for the cancer drug 5-fluorouracil agree closely with the vibrations measured in a laboratory, even when the calculation starts from a deliberately distorted molecule.</p>
+<p>A molecule absorbs infrared light at the frequencies at which its atoms vibrate, which gives a pattern, or spectrum, that works as its fingerprint. We used Skala, a recently developed method that uses machine learning to describe how electrons hold atoms together, to predict this fingerprint for 5-fluorouracil, a widely used cancer drug. We compared it with a published laboratory measurement made on the drug frozen in solid argon, an inert gas, at about −267 °C. Frozen like this, each molecule is held still and the peaks are sharp.</p>
+<p>After one common correction factor, which accounts for a known, systematic overestimate in this kind of calculation, the predicted frequencies differed from the measured ones by 11 units on average. Frequencies are given in wavenumbers (cm⁻¹), and the compared range runs from 300 to 1800. The two strongest absorptions, from the drug's two carbon–oxygen double bonds, agreed within 4 units.</p>
+<p>Drug-screening workflows often supply rough molecular shapes, so we also began from shapes distorted on purpose. The calculation relaxed each of them to the same stable shape as from a normal start. The vibrations were computed from the shape relaxed from the moderately distorted start.</p>
+<p><b>Key points</b></p>
+<ul><li>The computed infrared spectrum of the drug is consistent with the laboratory spectrum after one correction factor.</li>
+<li>Starting shapes distorted on purpose, as a stand-in for rough screening shapes, all relax to the same stable shape.</li>
+<li>The computed shape is stable (no unstable motions), and the calculation's internal consistency checks are shown in the supplement.</li></ul>
+</div>
+
+<div class="lv l3">
+<div class="who">Level 3 · scientific version</div>
+<p class="hl">Skala-1.1 harmonic infrared frequencies of 5-fluorouracil are consistent with the argon-matrix spectrum (25 bands; mean absolute error 11 cm⁻¹ after one scale factor of 0.974), from a geometry optimized starting 3.1 eV above the minimum.</p>
+<p>We assess Skala-1.1 on 5-fluorouracil (diketo form T1), a clinically used anticancer drug. Geometry optimizations were started from a normal structure and from structures deformed by 3.1 and 6.4 eV, to mimic rough screening geometries. All three starts reach one structure (within 0.0072 Å and 0.51 meV of the normal-start result), a true minimum at def2-TZVP with zero imaginary frequencies. Harmonic frequencies from the 3.1 eV-start geometry are consistent with the 6 K argon-matrix IR spectrum (Ivanov et al. 2017): mean absolute error 11 cm⁻¹ over 25 bands after one scale factor, both C=O stretches within 4 cm⁻¹, intensity rank correlation 0.86.</p>
+<p><b>Key points</b></p>
+<ul><li>The computed IR spectrum is consistent with experiment after a single scale factor (0.9736, fitted on the same 25 bands).</li>
+<li>Optimizations from 3.1 and 6.4 eV deformed starts converge to the same minimum as from a normal start. The IR was computed from the 3.1 eV start only.</li>
+<li>Zero imaginary frequencies; the Hessian passes symmetry and translation-invariance checks (supplement).</li></ul>
+</div>
+</div>
+
+<div class="grid g4">
+<div class="card"><div class="num">0</div><b>unstable motions</b><p class="small">the final shape is a true resting point</p></div>
+<div class="card"><div class="num nv">25</div><b>vibrations compared</b><p class="small">computed against measured</p></div>
+<div class="card"><div class="num sk">11 cm⁻¹</div><b>typical gap</b><p class="small">after one correction factor, on a scale reaching 1800</p></div>
+<div class="card"><div class="num sk">≤ 4 cm⁻¹</div><b>the two strongest peaks</b><p class="small">the drug's two C=O bonds</p></div>
+</div>
+
+<h2 id="story">The whole story in one picture</h2>
+<figure class="fig"><a href="figures/main/5fu_journey_D3_v2A_r3_design_hires_600dpi.png"><img src="assets/img/fig2_result.jpg" alt="Three questions about 5-fluorouracil, each answered yes" loading="lazy"></a><figcaption><b>Three questions, three answers.</b> (1) Do different starting shapes end in the same place? Yes. (2) Is that shape stable? Yes. (3) Is its infrared fingerprint consistent with the lab? Yes: 25 bands, 11 cm⁻¹ typical error after one scale factor.<div class="dl">Download: <a href="figures/main/5fu_journey_D3_v2A_r3_design_hires_600dpi.png" download>PNG</a><a href="figures/main/5fu_journey_D3_v2A_r3_design.pdf" download>PDF</a><a href="figures/main/5fu_journey_D3_v2A_r3_design.svg" download>SVG</a></div></figcaption></figure>
+
+<h2 id="box1">What is an infrared fingerprint?</h2>
+<div class="box"><h3>Box 1</h3>
+<p>Atoms in a molecule never rest: bonds stretch and bend like balls on springs. Each motion has its own pitch, and the molecule absorbs infrared light at exactly those pitches. Together the absorptions form a pattern that is unique to the molecule, its infrared fingerprint.</p>
+<p>A lab measures it with an infrared spectrometer. A computer can predict it from physics alone. If the prediction lines up with the measurement, the computer method is capturing how the molecule's atoms are held together.</p></div>
+<h3>Watch the drug vibrate</h3>
+<p>Three of the drug's 30 computed vibrations: its two C=O stretches (the strongest peaks) and the stretch of its C–F bond, the bond that makes it 5-<i>fluoro</i>uracil.</p>
+<div class="gifrow"><figure><img src="figures/supplement/animations/5fu_T1_mode_CO_C1O0_1812.gif" alt="C=O stretch animation" loading="lazy"><figcaption>C=O stretch (1812 cm⁻¹ unscaled)</figcaption></figure><figure><img src="figures/supplement/animations/5fu_T1_mode_CO_C6O7_1787.gif" alt="second C=O stretch animation" loading="lazy"><figcaption>second C=O stretch (1787 cm⁻¹ unscaled)</figcaption></figure><figure><img src="figures/supplement/animations/5fu_T1_mode_CF_1293.gif" alt="C–F stretch animation" loading="lazy"><figcaption>C–F stretch (1293 cm⁻¹ unscaled)</figcaption></figure></div>
+<p class="small">The motion is exaggerated so it can be seen. More animations are on the <a href="figures.html#supplement">figures page</a>.</p>
+
+<h2 id="fingerprint">The fingerprint, computed against measured</h2>
+<figure class="fig"><a href="figures/appendix/5fu_T1_IR_drugstory_pub_C.png"><img src="assets/img/appA_ir_broad.jpg" alt="Infrared fingerprint of 5-fluorouracil: computed bars up, measured bars down" loading="lazy"></a><figcaption>The infrared fingerprint figure. Read the caption at the depth you prefer, below. The figure’s line that the offset is “the same everywhere” is a simplification: before scaling, the gap is larger above 1000 cm⁻¹ than below.<div class="dl">Download: <a href="figures/appendix/5fu_T1_IR_drugstory_pub_C.png" download>PNG</a><a href="figures/appendix/5fu_T1_IR_drugstory_pub_C.pdf" download>PDF</a><a href="figures/appendix/5fu_T1_IR_drugstory_pub_C.svg" download>SVG</a></div></figcaption></figure>
+<div class="legend3">
+<div class="lg"><div class="who">In brief</div><p>The infrared fingerprint that Skala predicts for the cancer drug 5-fluorouracil (upward bars) lines up with the one measured in the lab (downward bars). The two tallest peaks, both from the drug's C=O groups, agree within 4 units.</p></div>
+<div class="lg"><div class="who">Plain legend</div><p>The infrared fingerprint computed with Skala for the cancer drug 5-fluorouracil (upward bars) is compared with the fingerprint measured in a laboratory on the drug frozen in solid argon (downward bars). After one correction factor, peak positions differ by 11 units on average (wavenumbers, cm⁻¹), and the two strongest peaks, from the drug's two carbon–oxygen double bonds, agree within 4 units. The calculation started from a molecule distorted on purpose.</p></div>
+<details><summary>Technical legend</summary><p>Computed infrared spectrum of 5-fluorouracil (diketo form T1) compared with the argon-matrix spectrum. (a) How an IR spectrum arises (schematic). (b) Harmonic IR spectrum from Skala-1.1 / def2-TZVP on the Skala-optimized geometry (optimization started 3.1 eV above the minimum; zero imaginary frequencies), frequencies multiplied by one scale factor of 0.9736 (upward bars, km/mol), against the 6 K argon-matrix spectrum of Ivanov et al. (2017) (downward bars, relative intensity). The two C=O stretches and the C–F stretch band are marked. (c) Summary: 25 vibrations between 1800 and 300 cm⁻¹ compared; mean absolute error 11 cm⁻¹ after scaling (the unscaled values are about 21 cm⁻¹ high on average, about 46 cm⁻¹ above 1000 cm⁻¹); both C=O bands within 4 cm⁻¹; intensity rank correlation 0.86. Bands are paired by frequency order; the largest single error after scaling is 29 cm⁻¹ (a low-frequency mode); N–H stretches are not compared. The scale factor was fitted on the same 25 bands.</p></details>
+</div>
+<div class="card"><p class="pull">The drug's two strongest peaks land within 4 units of the lab values.</p><p class="small">Scientific: after scaling, the two C=O stretches are 1764.5 vs 1761.2 and 1740.3 vs 1742.0 cm⁻¹ (computed vs measured).</p></div>
+
+<h2 id="box2">Why start from a bent shape?</h2>
+<div class="duo">
+<div><div class="who">Easy version</div><p class="easy">In drug screening, thousands of molecules are drawn quickly with cheap tools, so their shapes are rough. A good method has to cope with a rough starting shape, not only a perfect one.</p>
+<ul class="clean"><li>Screening makes many shapes fast, so each one is approximate.</li><li>Skala then relaxes the shape to its resting form.</li><li>The test: does a rough start still give a trustworthy answer?</li></ul></div>
+<div><div class="who">Scientific version</div><p>Inputs from a screening workflow (force-field, semi-empirical or machine-learned conformers) are approximate geometries. A usable refinement step must relax them to the same minimum regardless of the start. We therefore began from deliberately deformed 5-fluorouracil structures, 3.1 and 6.4 eV above the final energy (Skala-1.1 / def2-SVP), and checked that the optimized structure and its vibrations behave as for a clean start.</p>
+<ul class="clean"><li>Geometry: all three starts end at one structure (within 0.0072 Å and 0.51 meV of the normal-start result).</li><li>Vibrations: computed from the 3.1 eV start; consistent with experiment.</li></ul></div>
+</div>
+<div class="box"><h3>Box 2</h3><p>A method that only works from a perfect starting shape is of limited use in screening. We therefore began from deliberately distorted versions of 5-fluorouracil, up to 6.4 eV above its most stable shape, as a stand-in for rough screening geometries. The optimization ended at the same stable shape every time.</p><p><b>Honest framing:</b> these bent starts were made by deforming the molecule on purpose. They mimic the rough geometries of a screening pipeline; they are not taken from a real screening run.</p></div>
+<figure class="fig"><a href="figures/main/5fu_agentic_track_runs1_3_drugA_hires_600dpi.png"><img src="assets/img/fig1_setup.jpg" alt="Three deformed starts of 5-fluorouracil reach the same structure" loading="lazy"></a><figcaption><b>Three starts, one shape.</b> A standard start and two bent starts go through the supervised optimizer. All three end at the same final shape. The strip at the top shows where this step sits in a typical screening workflow (context only).<div class="dl">Download: <a href="figures/main/5fu_agentic_track_runs1_3_drugA_hires_600dpi.png" download>PNG</a><a href="figures/main/5fu_agentic_track_runs1_3_drugA.pdf" download>PDF</a><a href="figures/main/5fu_agentic_track_runs1_3_drugA.svg" download>SVG</a></div></figcaption></figure>
+<div class="card"><p class="pull">A bent start, a good fingerprint.</p><p class="small">Scientific: optimization from a deformed start gives an IR spectrum consistent with experiment.</p></div>
+
+<h2 id="order">What to take away, in order</h2>
+<ol class="ladder">
+<li class="top"><div class="n">1</div><div class="b"><h3>The computed infrared fingerprint of the drug is consistent with the lab spectrum</h3><p>25 vibrations between 1800 and 300 cm⁻¹; 11 cm⁻¹ typical error after one scale factor; both C=O bands within 4 cm⁻¹; strong and weak peaks in the same order (rank correlation 0.86).</p></div></li>
+<li><div class="n">2</div><div class="b"><h3>It works from a deformed start, as a screening pipeline would supply</h3><p>The infrared comes from an optimization started 3.1 eV above the minimum. Separately, optimizations from the normal start, 3.1 eV and 6.4 eV all ended at one structure. The 6.4 eV fact is about the shape only; the infrared was not computed from that start.</p></div></li>
+<li><div class="n">3</div><div class="b"><h3>The result is a true resting shape</h3><p>Zero imaginary frequencies at the larger basis set. This is what makes the infrared comparison meaningful.</p></div></li>
+<li><div class="n">4</div><div class="b"><h3>The supervised optimizer finished each start in minutes</h3><p>23, 64 and 72 gradient evaluations (4 to 14 minutes of optimization on one cloud GPU) for the normal, 3.1 eV and 6.4 eV starts. <a href="agent.html">What the AI agent did →</a></p></div></li>
+</ol>
+
+<h2 id="claims">Every claim, and what backs it</h2>
+<div class="tw"><table><thead><tr><th>Claim</th><th class="r">Number</th><th>Where it comes from</th></tr></thead><tbody>
+<tr><td>Computed IR is consistent with the argon-matrix spectrum</td><td class="r">11 cm⁻¹</td><td>Mean absolute error over 25 bands after one scale factor (0.9736, fitted on the same bands). <code>data/comparison/5fu_T1_ir_vs_argon_matrix.csv</code></td></tr>
+<tr><td>Both C=O bands agree</td><td class="r">≤ 4 cm⁻¹</td><td>1764.5 vs 1761.2 and 1740.3 vs 1742.0 after scaling</td></tr>
+<tr><td>Strong and weak peaks come in the same order</td><td class="r">0.86</td><td>Rank correlation of intensities, computed vs measured</td></tr>
+<tr><td>Zero imaginary frequencies</td><td class="r">0</td><td>Hessian at def2-TZVP, T1. <code>data/module2_T1/thermo.json</code></td></tr>
+<tr><td>IR computed from a 3.1 eV bent start</td><td class="r">3.1 eV</td><td>Module 2 started from the Run 2 structure</td></tr>
+<tr><td>Starts up to 6.4 eV reach one structure</td><td class="r">≤ 0.0072 Å</td><td>Module 1, Runs 1 to 3 (geometry only, def2-SVP): Run 2 is 0.0072 Å and 0.51 meV from Run 1; Run 3 is 0.0051 Å and 0.29 meV</td></tr>
+<tr><td>IR computed from the 6.4 eV start</td><td class="r">–</td><td>Not run. Not claimed.</td></tr>
+</tbody></table></div>
+
+<div class="note"><p><b>Fair limits to read with the headline.</b> One molecule. Harmonic approximation. The lab reference is a cold argon matrix (6 K), not a gas or a solution. Bands are paired by their order. The scale factor was fitted on these same bands. The N–H stretches are not compared, and the lowest modes are the least certain. No other method was run on this drug, so this report says nothing about whether Skala-1.1 is more or less accurate than other methods. Skala-1.1 is described in a preprint that has not been peer reviewed.</p></div>
+<p>Next: <a href="findings.html">every number with its source file</a>, <a href="explainers.html">the ideas in pictures</a>, or <a href="future.html">what others could build on this</a>.</p>
+
+<div class="next"><a href="index.html">← Home</a><a href="explainers.html">Explainers →</a></div>
+</main>
+<footer><div class="in">
+Code: MIT licence, Copyright (c) 2026 The Authors. Author names and affiliations are withheld for double-anonymous review.<br>
+Skala-1.1 is described in a preprint (arXiv:2506.14665, version 6) that has not been peer reviewed. The functional, its weights and its licence belong to its developers. This site links to it and does not redistribute it.<br>
+This site asks search engines not to index it.
+</div></footer>
+</body>
+</html>

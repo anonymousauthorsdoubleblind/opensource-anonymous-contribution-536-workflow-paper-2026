@@ -1,0 +1,190 @@
+{
+  "arm": "GS",
+  "arm_label": "Gemini agent from cap 0.005 A",
+  "start": "D2",
+  "requirement": "R0",
+  "backend": "skala",
+  "status": "finished",
+  "converged": true,
+  "final_energy_eV": -13971.351937643563,
+  "final_fmax": 0.017275433787485358,
+  "gradients_optimization": 72,
+  "gradients_evaluation": 4,
+  "gradients_total": 76,
+  "scf_calls_total": 76,
+  "minutes_optimization": 14.36,
+  "minutes_api_wait_excluded": 3.39,
+  "minutes_total_wall": 18.63,
+  "steps_total": 65,
+  "passes_with_steps": 1,
+  "final_structure": {
+    "plane_rms_A": 0.0067,
+    "transannular_A": [
+      2.841
+    ],
+    "rmsd_to_reference_A": 0.0188,
+    "bond_graph_ok": true,
+    "energy_eV": -13971.351937643563
+  },
+  "curvature_kappa_eV_A2": [
+    0.2477,
+    0.456,
+    0.8901
+  ],
+  "curvature_any_negative": false,
+  "switched_basin": false,
+  "basins_found": 1,
+  "scf_not_converged_steps": 0,
+  "agent": {
+    "enabled_at_end": true,
+    "calls": 12,
+    "rollbacks": 0,
+    "degraded_calls": 0,
+    "controller_errors": 0,
+    "actions": [
+      {
+        "n": 1,
+        "step": 0,
+        "pass_id": 1,
+        "event": "basin_choice",
+        "action": "CONTINUE",
+        "params": {},
+        "status": "accepted",
+        "rationale": "There is only a single candidate basin (id=0, found across 13 seeds), so no basin switch is needed and we can continue with the optimization.",
+        "outcome": "continue"
+      },
+      {
+        "n": 2,
+        "step": 0,
+        "pass_id": 1,
+        "event": "pass_start",
+        "action": "CONTINUE",
+        "params": {},
+        "status": "accepted",
+        "rationale": "At the start of pass 1 with no steps taken yet, step_advisor recommends keeping the existing settings (step_advisor.recommendation.action='keep'), so optimizati",
+        "outcome": "continue"
+      },
+      {
+        "n": 3,
+        "step": 6,
+        "pass_id": 1,
+        "event": "trigger",
+        "action": "SET_PARAMS",
+        "params": {
+          "maxstep": 0.01,
+          "optimizer": "lbfgs_mem20"
+        },
+        "status": "accepted",
+        "rationale": "With cap_saturation=1.0, energy_falling_last5=5, and curvature_ratio=0.02, steps are pinned with falling energy, so we switch optimizer to lbfgs_mem20 and doubl",
+        "outcome": "kept"
+      },
+      {
+        "n": 4,
+        "step": 11,
+        "pass_id": 1,
+        "event": "trigger",
+        "action": "SET_PARAMS",
+        "params": {
+          "maxstep": 0.02
+        },
+        "status": "accepted",
+        "rationale": "Steps are pinned at cap_saturation=1.0 with energy falling on every step (energy_falling_last5=5) and fmax far above target, so we raise maxstep to 0.02 as reco",
+        "outcome": "kept"
+      },
+      {
+        "n": 5,
+        "step": 16,
+        "pass_id": 1,
+        "event": "trigger",
+        "action": "SET_PARAMS",
+        "params": {
+          "maxstep": 0.04
+        },
+        "status": "accepted",
+        "rationale": "With cap_saturation=1.0, energy_falling_last5=5, and fmax far above target, maxstep is raised from 0.02 to 0.04 A as recommended by step_advisor.",
+        "outcome": "kept"
+      },
+      {
+        "n": 6,
+        "step": 39,
+        "pass_id": 1,
+        "event": "trigger",
+        "action": "SET_PARAMS",
+        "params": {
+          "maxstep": 0.05
+        },
+        "status": "accepted",
+        "rationale": "With cap_saturation=1.0, energy_falling_last5=5, and fmax far above target (0.167 eV/A vs 0.02 eV/A), maxstep is raised from 0.04 to the ceiling of 0.05 A as re",
+        "outcome": "kept"
+      },
+      {
+        "n": 7,
+        "step": 65,
+        "pass_id": 2,
+        "event": "pass_start",
+        "action": "CONTINUE",
+        "params": {},
+        "status": "accepted",
+        "rationale": "At the start of pass 2, step_advisor recommends keeping the settings with curvature_ratio=0.59 and fmax_now=0.0175 already below the pass target of 0.02 eV/A.",
+        "outcome": "continue"
+      },
+      {
+        "n": 8,
+        "step": 65,
+        "pass_id": 3,
+        "event": "pass_start",
+        "action": "CONTINUE",
+        "params": {},
+        "status": "accepted",
+        "rationale": "At the start of pass 3, step_advisor recommends keeping the current settings with step_advisor.recommendation.action='keep' and an expected 1 step to reach the ",
+        "outcome": "continue"
+      },
+      {
+        "n": 9,
+        "step": 65,
+        "pass_id": 4,
+        "event": "pass_start",
+        "action": "CONTINUE",
+        "params": {},
+        "status": "accepted",
+        "rationale": "At the start of pass 4, step_advisor recommends keeping the current settings with step_advisor.recommendation.action='keep' and an expected 1 step to reach the ",
+        "outcome": "continue"
+      },
+      {
+        "n": 10,
+        "step": 65,
+        "pass_id": 5,
+        "event": "pass_start",
+        "action": "CONTINUE",
+        "params": {},
+        "status": "accepted",
+        "rationale": "At the start of pass 5, step_advisor recommends keeping the current settings with step_advisor.recommendation.action='keep' and an expected 1 step to target.",
+        "outcome": "continue"
+      },
+      {
+        "n": 11,
+        "step": 65,
+        "pass_id": 6,
+        "event": "pass_start",
+        "action": "CONTINUE",
+        "params": {},
+        "status": "accepted",
+        "rationale": "At the start of pass 6, step_advisor recommends keeping the current settings with step_advisor.recommendation.action='keep' and an expected 1 step to target.",
+        "outcome": "continue"
+      },
+      {
+        "n": 12,
+        "step": 65,
+        "pass_id": 6,
+        "event": "final_check",
+        "action": "CONTINUE",
+        "params": {},
+        "status": "accepted",
+        "rationale": "The optimization has converged in the target planar basin 0 with an intact bond graph (structure.bond_graph_ok=true) and low planar RMS deviation (structure.pla",
+        "outcome": "continue"
+      }
+    ]
+  },
+  "agent_integrity": "ok",
+  "mean_seconds_per_gradient": 11.75
+}

@@ -1,0 +1,29 @@
+mode,nu_Ar_cm1,I_rel_integrated,assignment_TED_as_printed,source,note
+Q33,1761.2,4.6,nuC2O(67),Ivanov2017_Table3,C=O region has Fermi resonances (FR1-FR4 at 1705/1755/1768/1780)
+Q32,1742.0,5.6,nuC4O(73),Ivanov2017_Table3,
+Q31,1684.5,0.6,nuC4C5(61),Ivanov2017_Table3,
+Q30,1472.0,0.43,betaN1H(29) nuC4N3(18),Ivanov2017_Table3,
+Q29a,1418.6,0.16,betaN1H(17) nuC4C5(13),Ivanov2017_Table3,split into two matrix components
+Q29b,1400.5,0.25,betaN1H(17) nuC4C5(13),Ivanov2017_Table3,split into two matrix components
+Q28,1366.5,0.07,betaN3H(52),Ivanov2017_Table3,
+Q27,1333.9,0.2,betaC4H(47) nuC4C5(12),Ivanov2017_Table3,printed as C4H; the same table labels the out-of-plane mode C6H (Q22). C-H is on C6 in standard numbering
+Q26,1247.6,1.5,nuC5F(44) nuC4N3(21),Ivanov2017_Table3,
+Q25,1180.7,1.1,nuC2N1(27) betaC4H(26),Ivanov2017_Table3,C4H as printed (see Q27)
+Q24,1147.2,0.15,nuC6N1(25) nuC4N3(24),Ivanov2017_Table3,
+Q23,959.4,0.18,nuC2N1(13) nuC2N3(28),Ivanov2017_Table3,
+Q22,876.1,0.32,gammaC6H(100),Ivanov2017_Table3,
+Q21,806.5,0.34,nuC5F(17) betaring(35),Ivanov2017_Table3,
+Q20,753.2,0.04,gammaC4O(59) gammaC2O(34),Ivanov2017_Table3,
+Q19,749.3,0.6,gammaC2O(95) gammaN1H(19),Ivanov2017_Table3,
+Q18,726.8,0.1,nuC5C6(40),Ivanov2017_Table3,
+Q17,652.9,0.9,gammaN3H(83),Ivanov2017_Table3,
+Q16,626.0,0.04,betaC5F(23) betaC4O(28),Ivanov2017_Table3,
+Q15,531.6,0.4,gammaN1H(90),Ivanov2017_Table3,
+Q14,526.8,0.07,betaC4O(14) betaring(33),Ivanov2017_Table3,
+Q13,450.6,0.2,betaring(48),Ivanov2017_Table3,
+Q12,392.3,0.3,betaC4O(39) betaC2O(16),Ivanov2017_Table3,
+Q11,375.8,0.2,gammaring(37) tauring(50),Ivanov2017_Table3,
+Q10,353.5,0.1,tauring(38) gammaC5F(62),Ivanov2017_Table3,
+Q9,302.1,0.03,betaC5F(75),Ivanov2017_Table3,
+NH_a,3480,,nu(N-H) [Markova label N3-H; their numbering is non-standard],Markova2005_Table3_ref42 (Graindourze 1990) and 'ref 4' column,both exptl columns give 3480
+NH_b,3416,,nu(N-H) [Markova label N1-H],Markova2005_Table3_ref42 (Graindourze 1990),'ref 4' column gives 3427

@@ -1,0 +1,81 @@
+{
+  "arm": "GS",
+  "arm_label": "Gemini agent from cap 0.005 A",
+  "start": "D1",
+  "requirement": "R0",
+  "basis_path": [
+    "def2-svp",
+    "def2-svp"
+  ],
+  "backend": "skala",
+  "agent_mode": "gemini",
+  "agent_version": "v2",
+  "spherical_d": true,
+  "nudge_rms_A": 0.01,
+  "force_unit_fix": false,
+  "force_convention": "v7: Eh/Bohr x 27.211386 labelled eV/A (about 1.89x smaller than true eV/A)",
+  "schedule": [
+    {
+      "basis": "def2-svp",
+      "maxstep": 0.005,
+      "steps": 200,
+      "fmax": 0.02,
+      "conv_tol": 1e-06,
+      "grid_level": 3
+    },
+    {
+      "basis": "def2-svp",
+      "maxstep": 0.005,
+      "steps": 200,
+      "fmax": 0.02,
+      "conv_tol": 1e-06,
+      "grid_level": 3
+    },
+    {
+      "basis": "def2-svp",
+      "maxstep": 0.005,
+      "steps": 200,
+      "fmax": 0.02,
+      "conv_tol": 1e-06,
+      "grid_level": 3
+    },
+    {
+      "basis": "def2-svp",
+      "maxstep": 0.005,
+      "steps": 200,
+      "fmax": 0.02,
+      "conv_tol": 1e-06,
+      "grid_level": 3
+    },
+    {
+      "basis": "def2-svp",
+      "maxstep": 0.005,
+      "steps": 200,
+      "fmax": 0.02,
+      "conv_tol": 1e-06,
+      "grid_level": 3
+    },
+    {
+      "basis": "def2-svp",
+      "maxstep": 0.005,
+      "steps": 200,
+      "fmax": 0.02,
+      "conv_tol": 1e-06,
+      "grid_level": 3
+    }
+  ],
+  "random_seed": null,
+  "optimizer_memory": 20,
+  "warm_start": true,
+  "endpoint_fmax": 0.02,
+  "gradient_budget": 250,
+  "models": {
+    "fast": "gemini-3.8-flash",
+    "pro": "gemini-pro-latest",
+    "strong": "gemini-4-argon"
+  },
+  "gpu": "NVIDIA L4",
+  "time_accounting": "t_opt_s = wall time minus time spent waiting for the Gemini API (rate limits, back-off, latency)",
+  "started": "2026-11-19T07:06:35",
+  "python": "3.13.16"
+}

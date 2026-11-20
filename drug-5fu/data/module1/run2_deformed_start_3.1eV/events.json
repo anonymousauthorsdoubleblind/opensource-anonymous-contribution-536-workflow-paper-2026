@@ -1,0 +1,935 @@
+[
+ {
+  "note": "surrogate exploration done",
+  "basins": 1,
+  "seconds": 2.2,
+  "kind": "note",
+  "pass_id": 1,
+  "step": 0,
+  "gradients": 0,
+  "t_s": 2.217,
+  "t_opt_s": 2.217
+ },
+ {
+  "trigger": "basin_choice",
+  "status": "ok",
+  "controller": "gemini",
+  "decision": {
+   "action": "CONTINUE",
+   "params": {},
+   "rationale": "There is only one basin (id 0) found by the surrogate with n_seeds=13 and rmsd_to_planar_ref_A=0.0022, and we are already targeting basin 0.",
+   "evidence": [
+    "basin.basins=[id:0]",
+    "basin.current_basin=0",
+    "basin.target_basin=0"
+   ],
+   "expected": {}
+  },
+  "seconds": 9.3,
+  "models": [
+   "gemini-4-argon"
+  ],
+  "tools_called": [
+   "submit_action"
+  ],
+  "api_waited_s": 0.0,
+  "api_elapsed_s": 9.3,
+  "rotations": 0,
+  "errors": [],
+  "kind": "agent_call",
+  "pass_id": 1,
+  "step": 0,
+  "gradients": 0,
+  "t_s": 12.073,
+  "t_opt_s": 2.813
+ },
+ {
+  "status": "accepted",
+  "notes": [],
+  "action": "CONTINUE",
+  "params": {},
+  "kind": "validator",
+  "pass_id": 1,
+  "step": 0,
+  "gradients": 0,
+  "t_s": 12.073,
+  "t_opt_s": 2.813
+ },
+ {
+  "trigger": "pass_start",
+  "status": "ok",
+  "controller": "gemini",
+  "decision": {
+   "action": "CONTINUE",
+   "params": {},
+   "rationale": "At the start of pass 1 with no steps taken yet, step_advisor recommends keeping the default settings.",
+   "evidence": [
+    "step_advisor.recommendation.action=keep",
+    "step_advisor.recommendation.reason=settings look appropriate",
+    "run.total_steps=0"
+   ],
+   "expected": {}
+  },
+  "seconds": 23.4,
+  "models": [
+   "gemini-3.8-flash"
+  ],
+  "tools_called": [
+   "submit_action"
+  ],
+  "api_waited_s": 0.0,
+  "api_elapsed_s": 10.2,
+  "rotations": 0,
+  "errors": [],
+  "kind": "agent_call",
+  "pass_id": 1,
+  "step": 0,
+  "gradients": 0,
+  "t_s": 35.47,
+  "t_opt_s": 15.97
+ },
+ {
+  "status": "accepted",
+  "notes": [],
+  "action": "CONTINUE",
+  "params": {},
+  "kind": "validator",
+  "pass_id": 1,
+  "step": 0,
+  "gradients": 0,
+  "t_s": 35.47,
+  "t_opt_s": 15.97
+ },
+ {
+  "settings": {
+   "basis": "def2-svp",
+   "maxstep": 0.005,
+   "steps": 200,
+   "fmax": 0.02,
+   "conv_tol": 1e-06,
+   "grid_level": 3
+  },
+  "label": "",
+  "kind": "pass_start",
+  "pass_id": 1,
+  "step": 0,
+  "gradients": 0,
+  "t_s": 35.47,
+  "t_opt_s": 15.97
+ },
+ {
+  "trigger": "curvature_mismatch",
+  "features": {
+   "steps_in_pass": 6,
+   "fmax_now": 2.9794623414043944,
+   "fmax_target": 0.02,
+   "maxstep": 0.005,
+   "decay_per_step": 0.9608626377749442,
+   "uphill_fmax_last4": 0,
+   "oscillation_index": 0.0,
+   "dE_last_eV": -0.12194103553338209,
+   "cap_saturation": 1.0,
+   "plateau": false,
+   "energy_falling_last5": 5,
+   "dE_mean_last5_over_noise": 5042.7,
+   "scf_converged_last": true
+  },
+  "kind": "trigger",
+  "pass_id": 1,
+  "step": 6,
+  "gradients": 8,
+  "t_s": 114.224,
+  "t_opt_s": 94.724
+ },
+ {
+  "trigger": "trigger",
+  "status": "ok",
+  "controller": "gemini",
+  "decision": {
+   "action": "SET_PARAMS",
+   "params": {
+    "maxstep": 0.01
+   },
+   "rationale": "Steps are pinned with cap_saturation=1.0 and energy falling on every step while fmax is far above target, so raising maxstep to 0.01 as recommended by step_advisor accelerates convergence without instability.",
+   "evidence": [
+    "step_advisor.cap_saturation=1.0",
+    "features.energy_falling_last5=5",
+    "step_advisor.recommendation.maxstep=0.01",
+    "step_advisor.curvature_ratio=0.03"
+   ],
+   "expected": {
+    "steps_to_target": 126,
+    "fmax_after_5_steps": 2.4
+   }
+  },
+  "seconds": 28.6,
+  "models": [
+   "gemini-3.8-flash"
+  ],
+  "tools_called": [
+   "submit_action"
+  ],
+  "api_waited_s": 0.0,
+  "api_elapsed_s": 28.6,
+  "rotations": 0,
+  "errors": [],
+  "kind": "agent_call",
+  "pass_id": 1,
+  "step": 6,
+  "gradients": 8,
+  "t_s": 142.84,
+  "t_opt_s": 94.74
+ },
+ {
+  "status": "accepted",
+  "notes": [],
+  "action": "SET_PARAMS",
+  "params": {
+   "maxstep": 0.01
+  },
+  "kind": "validator",
+  "pass_id": 1,
+  "step": 6,
+  "gradients": 8,
+  "t_s": 142.84,
+  "t_opt_s": 94.74
+ },
+ {
+  "action": "SET_PARAMS",
+  "params": {
+   "maxstep": 0.01
+  },
+  "kind": "action_applied",
+  "pass_id": 1,
+  "step": 6,
+  "gradients": 8,
+  "t_s": 142.841,
+  "t_opt_s": 94.741
+ },
+ {
+  "outcome": "kept",
+  "action": "SET_PARAMS",
+  "E_change_eV": -0.9812270641359646,
+  "fmax_before": 2.9794623414043944,
+  "fmax_after": 1.952619874020277,
+  "start_gradients": 8,
+  "start_t_opt_s": 94.74,
+  "kind": "probation",
+  "pass_id": 1,
+  "step": 11,
+  "gradients": 13,
+  "t_s": 201.098,
+  "t_opt_s": 152.998
+ },
+ {
+  "trigger": "steps_pinned_at_cap",
+  "features": {
+   "steps_in_pass": 11,
+   "fmax_now": 1.952619874020277,
+   "fmax_target": 0.02,
+   "maxstep": 0.01,
+   "decay_per_step": 0.918958630718483,
+   "uphill_fmax_last4": 0,
+   "oscillation_index": 0.0,
+   "dE_last_eV": -0.15794607656061999,
+   "cap_saturation": 1.0,
+   "plateau": false,
+   "energy_falling_last5": 5,
+   "dE_mean_last5_over_noise": 7211.9,
+   "scf_converged_last": true
+  },
+  "kind": "trigger",
+  "pass_id": 1,
+  "step": 11,
+  "gradients": 13,
+  "t_s": 201.123,
+  "t_opt_s": 153.023
+ },
+ {
+  "trigger": "trigger",
+  "status": "ok",
+  "controller": "gemini",
+  "decision": {
+   "action": "SET_PARAMS",
+   "params": {
+    "maxstep": 0.02
+   },
+   "rationale": "Steps remain pinned at the cap with cap_saturation=1.0 and energy falling on all recent steps while fmax is far above target, so doubling maxstep to 0.02 as recommended by step_advisor.",
+   "evidence": [
+    "step_advisor.cap_saturation=1.0",
+    "features.energy_falling_last5=5",
+    "features.fmax_now=1.9526",
+    "step_advisor.recommendation.maxstep=0.02"
+   ],
+   "expected": {
+    "steps_to_target": 55,
+    "fmax_after_5_steps": 1.2
+   }
+  },
+  "seconds": 38.9,
+  "models": [
+   "gemini-3.8-flash"
+  ],
+  "tools_called": [
+   "submit_action"
+  ],
+  "api_waited_s": 0.0,
+  "api_elapsed_s": 38.9,
+  "rotations": 0,
+  "errors": [],
+  "kind": "agent_call",
+  "pass_id": 1,
+  "step": 11,
+  "gradients": 13,
+  "t_s": 240.069,
+  "t_opt_s": 153.029
+ },
+ {
+  "status": "accepted",
+  "notes": [],
+  "action": "SET_PARAMS",
+  "params": {
+   "maxstep": 0.02
+  },
+  "kind": "validator",
+  "pass_id": 1,
+  "step": 11,
+  "gradients": 13,
+  "t_s": 240.069,
+  "t_opt_s": 153.029
+ },
+ {
+  "action": "SET_PARAMS",
+  "params": {
+   "maxstep": 0.02
+  },
+  "kind": "action_applied",
+  "pass_id": 1,
+  "step": 11,
+  "gradients": 13,
+  "t_s": 240.07,
+  "t_opt_s": 153.03
+ },
+ {
+  "outcome": "kept",
+  "action": "SET_PARAMS",
+  "E_change_eV": -0.8701483694985654,
+  "fmax_before": 1.952619874020277,
+  "fmax_after": 0.5172875436838562,
+  "start_gradients": 13,
+  "start_t_opt_s": 153.03,
+  "kind": "probation",
+  "pass_id": 1,
+  "step": 16,
+  "gradients": 18,
+  "t_s": 302.825,
+  "t_opt_s": 215.785
+ },
+ {
+  "trigger": "steps_pinned_at_cap",
+  "features": {
+   "steps_in_pass": 19,
+   "fmax_now": 0.39800636781798915,
+   "fmax_target": 0.02,
+   "maxstep": 0.02,
+   "decay_per_step": 0.8437583214728087,
+   "uphill_fmax_last4": 0,
+   "oscillation_index": 0.0,
+   "dE_last_eV": -0.031132932786931633,
+   "cap_saturation": 1.0,
+   "plateau": false,
+   "energy_falling_last5": 5,
+   "dE_mean_last5_over_noise": 2565.9,
+   "scf_converged_last": true
+  },
+  "kind": "trigger",
+  "pass_id": 1,
+  "step": 19,
+  "gradients": 21,
+  "t_s": 340.562,
+  "t_opt_s": 253.522
+ },
+ {
+  "trigger": "trigger",
+  "status": "ok",
+  "controller": "gemini",
+  "decision": {
+   "action": "SET_PARAMS",
+   "params": {
+    "maxstep": 0.04
+   },
+   "rationale": "Steps remain pinned at the cap with cap_saturation=1.0 and energy falling on all recent steps while fmax is far above target, so raising maxstep to 0.04 as advised by step_advisor.",
+   "evidence": [
+    "step_advisor.curvature_ratio=0.32",
+    "features.cap_saturation=1.0",
+    "features.energy_falling_last5=5",
+    "features.fmax_now=0.398",
+    "step_advisor.recommendation.maxstep=0.04"
+   ],
+   "expected": {
+    "fmax_after_5_steps": 0.25,
+    "steps_to_target": 18
+   }
+  },
+  "seconds": 27.0,
+  "models": [
+   "gemini-3.8-flash"
+  ],
+  "tools_called": [
+   "submit_action"
+  ],
+  "api_waited_s": 0.0,
+  "api_elapsed_s": 27.0,
+  "rotations": 0,
+  "errors": [],
+  "kind": "agent_call",
+  "pass_id": 1,
+  "step": 19,
+  "gradients": 21,
+  "t_s": 367.533,
+  "t_opt_s": 253.533
+ },
+ {
+  "status": "accepted",
+  "notes": [],
+  "action": "SET_PARAMS",
+  "params": {
+   "maxstep": 0.04
+  },
+  "kind": "validator",
+  "pass_id": 1,
+  "step": 19,
+  "gradients": 21,
+  "t_s": 367.534,
+  "t_opt_s": 253.534
+ },
+ {
+  "action": "SET_PARAMS",
+  "params": {
+   "maxstep": 0.04
+  },
+  "kind": "action_applied",
+  "pass_id": 1,
+  "step": 19,
+  "gradients": 21,
+  "t_s": 367.535,
+  "t_opt_s": 253.535
+ },
+ {
+  "outcome": "kept",
+  "action": "SET_PARAMS",
+  "E_change_eV": -0.16899130754245562,
+  "fmax_before": 0.39800636781798915,
+  "fmax_after": 0.2264766994261123,
+  "start_gradients": 21,
+  "start_t_opt_s": 253.53,
+  "kind": "probation",
+  "pass_id": 1,
+  "step": 24,
+  "gradients": 26,
+  "t_s": 432.539,
+  "t_opt_s": 318.539
+ },
+ {
+  "steps": 57,
+  "fmax": 0.016675345863300356,
+  "energy_eV": -13971.352161664609,
+  "target_met": true,
+  "kind": "pass_end",
+  "pass_id": 1,
+  "step": 57,
+  "gradients": 59,
+  "t_s": 817.253,
+  "t_opt_s": 703.253
+ },
+ {
+  "tool": "get_evidence",
+  "args": {
+   "topic": "run_log"
+  },
+  "result_keys": [
+   "actions",
+   "strikes",
+   "agent_calls",
+   "gradients"
+  ],
+  "event": "pass_start",
+  "kind": "tool_call",
+  "pass_id": 2,
+  "step": 57,
+  "gradients": 59,
+  "t_s": 821.455,
+  "t_opt_s": 707.455
+ },
+ {
+  "trigger": "pass_start",
+  "status": "ok",
+  "controller": "gemini",
+  "decision": {
+   "action": "CONTINUE",
+   "params": {},
+   "rationale": "With fmax_now at 0.0167 already below the target of 0.02 and step_advisor recommending keep with a curvature ratio of 0.59, default pass settings are appropriate to continue.",
+   "evidence": [
+    "step_advisor.recommendation.action=keep",
+    "features.fmax_now=0.0167",
+    "features.fmax_target=0.02",
+    "step_advisor.curvature_ratio=0.59"
+   ],
+   "expected": {
+    "steps_to_target": 1,
+    "fmax_after_5_steps": 0.0167
+   }
+  },
+  "seconds": 21.0,
+  "models": [
+   "gemini-3.8-flash",
+   "gemini-3.8-flash"
+  ],
+  "tools_called": [
+   "get_evidence",
+   "submit_action"
+  ],
+  "api_waited_s": 0.0,
+  "api_elapsed_s": 21.0,
+  "rotations": 0,
+  "errors": [],
+  "kind": "agent_call",
+  "pass_id": 2,
+  "step": 57,
+  "gradients": 59,
+  "t_s": 838.274,
+  "t_opt_s": 703.294
+ },
+ {
+  "status": "accepted",
+  "notes": [],
+  "action": "CONTINUE",
+  "params": {},
+  "kind": "validator",
+  "pass_id": 2,
+  "step": 57,
+  "gradients": 59,
+  "t_s": 838.274,
+  "t_opt_s": 703.294
+ },
+ {
+  "settings": {
+   "basis": "def2-svp",
+   "maxstep": 0.005,
+   "steps": 200,
+   "fmax": 0.02,
+   "conv_tol": 1e-06,
+   "grid_level": 3
+  },
+  "label": "",
+  "kind": "pass_start",
+  "pass_id": 2,
+  "step": 57,
+  "gradients": 59,
+  "t_s": 838.275,
+  "t_opt_s": 703.295
+ },
+ {
+  "steps": 0,
+  "fmax": 0.018078398437891274,
+  "energy_eV": -13971.352163550353,
+  "target_met": true,
+  "kind": "pass_end",
+  "pass_id": 2,
+  "step": 57,
+  "gradients": 59,
+  "t_s": 848.83,
+  "t_opt_s": 713.85
+ },
+ {
+  "tool": "get_evidence",
+  "args": {
+   "topic": "trajectory",
+   "window": 5
+  },
+  "result_keys": [
+   "pass_id",
+   "rows"
+  ],
+  "event": "pass_start",
+  "kind": "tool_call",
+  "pass_id": 3,
+  "step": 57,
+  "gradients": 59,
+  "t_s": 855.034,
+  "t_opt_s": 720.054
+ },
+ {
+  "tool": "get_evidence",
+  "args": {
+   "topic": "run_log",
+   "window": 10
+  },
+  "result_keys": [
+   "actions",
+   "strikes",
+   "agent_calls",
+   "gradients"
+  ],
+  "event": "pass_start",
+  "kind": "tool_call",
+  "pass_id": 3,
+  "step": 57,
+  "gradients": 59,
+  "t_s": 859.521,
+  "t_opt_s": 724.541
+ },
+ {
+  "trigger": "pass_start",
+  "status": "ok",
+  "controller": "gemini",
+  "decision": {
+   "action": "CONTINUE",
+   "params": {},
+   "rationale": "At the start of pass 3, step_advisor recommends keeping default settings with a forecast of 1 step to reach the target force.",
+   "evidence": [
+    "step_advisor.recommendation.action=keep",
+    "step_advisor.forecast.steps_to_target=1"
+   ],
+   "expected": {
+    "steps_to_target": 1
+   }
+  },
+  "seconds": 20.9,
+  "models": [
+   "gemini-3.8-flash",
+   "gemini-3.8-flash",
+   "gemini-3.8-flash"
+  ],
+  "tools_called": [
+   "get_evidence",
+   "get_evidence",
+   "submit_action"
+  ],
+  "api_waited_s": 0.0,
+  "api_elapsed_s": 20.8,
+  "rotations": 0,
+  "errors": [],
+  "kind": "agent_call",
+  "pass_id": 3,
+  "step": 57,
+  "gradients": 59,
+  "t_s": 869.687,
+  "t_opt_s": 713.867
+ },
+ {
+  "status": "accepted",
+  "notes": [],
+  "action": "CONTINUE",
+  "params": {},
+  "kind": "validator",
+  "pass_id": 3,
+  "step": 57,
+  "gradients": 59,
+  "t_s": 869.688,
+  "t_opt_s": 713.868
+ },
+ {
+  "settings": {
+   "basis": "def2-svp",
+   "maxstep": 0.005,
+   "steps": 200,
+   "fmax": 0.02,
+   "conv_tol": 1e-06,
+   "grid_level": 3
+  },
+  "label": "",
+  "kind": "pass_start",
+  "pass_id": 3,
+  "step": 57,
+  "gradients": 59,
+  "t_s": 869.688,
+  "t_opt_s": 713.868
+ },
+ {
+  "steps": 0,
+  "fmax": 0.018177594744766455,
+  "energy_eV": -13971.352163047035,
+  "target_met": true,
+  "kind": "pass_end",
+  "pass_id": 3,
+  "step": 57,
+  "gradients": 59,
+  "t_s": 878.432,
+  "t_opt_s": 722.612
+ },
+ {
+  "trigger": "pass_start",
+  "status": "ok",
+  "controller": "gemini",
+  "decision": {
+   "action": "CONTINUE",
+   "params": {},
+   "rationale": "At the start of pass 4, step_advisor recommends keeping settings with action 'keep' and forecasts 1 step to target.",
+   "evidence": [
+    "step_advisor.recommendation.action=keep",
+    "step_advisor.forecast.steps_to_target=1"
+   ],
+   "expected": {
+    "steps_to_target": 1,
+    "fmax_after_5_steps": 0.02
+   }
+  },
+  "seconds": 14.1,
+  "models": [
+   "gemini-3.8-flash"
+  ],
+  "tools_called": [
+   "submit_action"
+  ],
+  "api_waited_s": 0.0,
+  "api_elapsed_s": 14.1,
+  "rotations": 0,
+  "errors": [],
+  "kind": "agent_call",
+  "pass_id": 4,
+  "step": 57,
+  "gradients": 59,
+  "t_s": 892.547,
+  "t_opt_s": 722.617
+ },
+ {
+  "status": "accepted",
+  "notes": [],
+  "action": "CONTINUE",
+  "params": {},
+  "kind": "validator",
+  "pass_id": 4,
+  "step": 57,
+  "gradients": 59,
+  "t_s": 892.547,
+  "t_opt_s": 722.617
+ },
+ {
+  "settings": {
+   "basis": "def2-svp",
+   "maxstep": 0.005,
+   "steps": 200,
+   "fmax": 0.02,
+   "conv_tol": 1e-06,
+   "grid_level": 3
+  },
+  "label": "",
+  "kind": "pass_start",
+  "pass_id": 4,
+  "step": 57,
+  "gradients": 59,
+  "t_s": 892.547,
+  "t_opt_s": 722.617
+ },
+ {
+  "steps": 0,
+  "fmax": 0.01781749550989263,
+  "energy_eV": -13971.352162464025,
+  "target_met": true,
+  "kind": "pass_end",
+  "pass_id": 4,
+  "step": 57,
+  "gradients": 59,
+  "t_s": 901.342,
+  "t_opt_s": 731.412
+ },
+ {
+  "trigger": "pass_start",
+  "status": "ok",
+  "controller": "gemini",
+  "decision": {
+   "action": "CONTINUE",
+   "params": {},
+   "rationale": "At the start of pass 5, step_advisor recommends keeping the default settings with action 'keep' and forecasts convergence within 1 step.",
+   "evidence": [
+    "step_advisor.recommendation.action=keep",
+    "step_advisor.forecast.steps_to_target=1"
+   ],
+   "expected": {
+    "steps_to_target": 1,
+    "fmax_after_5_steps": 0.02
+   }
+  },
+  "seconds": 16.7,
+  "models": [
+   "gemini-3.8-flash"
+  ],
+  "tools_called": [
+   "submit_action"
+  ],
+  "api_waited_s": 0.0,
+  "api_elapsed_s": 16.7,
+  "rotations": 0,
+  "errors": [],
+  "kind": "agent_call",
+  "pass_id": 5,
+  "step": 57,
+  "gradients": 59,
+  "t_s": 918.088,
+  "t_opt_s": 731.418
+ },
+ {
+  "status": "accepted",
+  "notes": [],
+  "action": "CONTINUE",
+  "params": {},
+  "kind": "validator",
+  "pass_id": 5,
+  "step": 57,
+  "gradients": 59,
+  "t_s": 918.088,
+  "t_opt_s": 731.418
+ },
+ {
+  "settings": {
+   "basis": "def2-svp",
+   "maxstep": 0.005,
+   "steps": 200,
+   "fmax": 0.02,
+   "conv_tol": 1e-06,
+   "grid_level": 3
+  },
+  "label": "",
+  "kind": "pass_start",
+  "pass_id": 5,
+  "step": 57,
+  "gradients": 59,
+  "t_s": 918.088,
+  "t_opt_s": 731.418
+ },
+ {
+  "steps": 0,
+  "fmax": 0.019054261703496764,
+  "energy_eV": -13971.352160219716,
+  "target_met": true,
+  "kind": "pass_end",
+  "pass_id": 5,
+  "step": 57,
+  "gradients": 59,
+  "t_s": 926.849,
+  "t_opt_s": 740.179
+ },
+ {
+  "trigger": "pass_start",
+  "status": "ok",
+  "controller": "gemini",
+  "decision": {
+   "action": "CONTINUE",
+   "params": {},
+   "rationale": "At the start of final pass 6/6, step_advisor recommends keeping the default settings with action 'keep' and forecasts convergence within 1 step.",
+   "evidence": [
+    "step_advisor.recommendation.action=keep",
+    "step_advisor.forecast.steps_to_target=1"
+   ],
+   "expected": {
+    "fmax_after_5_steps": 0.02,
+    "steps_to_target": 1
+   }
+  },
+  "seconds": 7.6,
+  "models": [
+   "gemini-3.8-flash"
+  ],
+  "tools_called": [
+   "submit_action"
+  ],
+  "api_waited_s": 0.0,
+  "api_elapsed_s": 7.6,
+  "rotations": 0,
+  "errors": [],
+  "kind": "agent_call",
+  "pass_id": 6,
+  "step": 57,
+  "gradients": 59,
+  "t_s": 934.497,
+  "t_opt_s": 740.187
+ },
+ {
+  "status": "accepted",
+  "notes": [],
+  "action": "CONTINUE",
+  "params": {},
+  "kind": "validator",
+  "pass_id": 6,
+  "step": 57,
+  "gradients": 59,
+  "t_s": 934.497,
+  "t_opt_s": 740.187
+ },
+ {
+  "settings": {
+   "basis": "def2-svp",
+   "maxstep": 0.005,
+   "steps": 200,
+   "fmax": 0.02,
+   "conv_tol": 1e-06,
+   "grid_level": 3
+  },
+  "label": "",
+  "kind": "pass_start",
+  "pass_id": 6,
+  "step": 57,
+  "gradients": 59,
+  "t_s": 934.498,
+  "t_opt_s": 740.188
+ },
+ {
+  "steps": 0,
+  "fmax": 0.018103845390799737,
+  "energy_eV": -13971.352163585887,
+  "target_met": true,
+  "kind": "pass_end",
+  "pass_id": 6,
+  "step": 57,
+  "gradients": 59,
+  "t_s": 945.155,
+  "t_opt_s": 750.845
+ },
+ {
+  "trigger": "final_check",
+  "status": "ok",
+  "controller": "gemini",
+  "decision": {
+   "action": "CONTINUE",
+   "params": {},
+   "rationale": "At final_check, the geometry is planar in target basin 0 with bond_graph_ok=true and rmsd_to_reference_A=0.019, so the optimization can conclude cleanly.",
+   "evidence": [
+    "structure.bond_graph_ok=true",
+    "structure.rmsd_to_reference_A=0.019",
+    "structure.plane_rms_A=0.0073",
+    "basin.current_basin=0"
+   ],
+   "expected": {}
+  },
+  "seconds": 6.5,
+  "models": [
+   "gemini-4-argon"
+  ],
+  "tools_called": [
+   "submit_action"
+  ],
+  "api_waited_s": 0.0,
+  "api_elapsed_s": 6.5,
+  "rotations": 0,
+  "errors": [],
+  "kind": "agent_call",
+  "pass_id": 6,
+  "step": 57,
+  "gradients": 59,
+  "t_s": 951.659,
+  "t_opt_s": 750.849
+ },
+ {
+  "status": "accepted",
+  "notes": [],
+  "action": "CONTINUE",
+  "params": {},
+  "kind": "validator",
+  "pass_id": 6,
+  "step": 57,
+  "gradients": 59,
+  "t_s": 951.659,
+  "t_opt_s": 750.849
+ }
+]

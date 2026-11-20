@@ -1,0 +1,189 @@
+{
+ "table": [
+  {
+   "label": "Gemini agent from cap 0.005 A",
+   "session": "now",
+   "mode": "LLM",
+   "converged": true,
+   "steps": 16,
+   "grads": 23,
+   "first_cross_step": 15,
+   "final_fmax": 0.015301135408364103,
+   "final_E": -13971.35165227858,
+   "decisions": 9,
+   "by_rules": 0,
+   "by_llm": 9,
+   "llm_api_calls": 10,
+   "rollbacks": 0,
+   "degraded": false,
+   "cap_changes": [
+    [
+     6,
+     0.01
+    ]
+   ],
+   "fmax": [
+    1.3742427263226198,
+    1.053723736935836,
+    0.78918656013957,
+    0.5698426847841326,
+    0.3828244138738332,
+    0.23741857305692116,
+    0.13248445870050335,
+    0.12289545823453829,
+    0.0626075632792303,
+    0.04882902592650948,
+    0.045150474173813446,
+    0.04264677106122831,
+    0.04125188966980283,
+    0.0385363196809402,
+    0.019538983143785,
+    0.015010452780048518
+   ],
+   "cap": [
+    0.005,
+    0.005,
+    0.005,
+    0.005,
+    0.005,
+    0.005,
+    0.01,
+    0.01,
+    0.01,
+    0.01,
+    0.01,
+    0.01,
+    0.01,
+    0.01,
+    0.01,
+    0.005
+   ],
+   "llm_steps": [
+    6
+   ],
+   "arm": "GS",
+   "group": "cap0.005"
+  }
+ ],
+ "decisions": {
+  "GS": [
+   {
+    "step": 0,
+    "pass_id": 1,
+    "event": "basin_choice",
+    "trigger": null,
+    "decided_by": "llm",
+    "handover": null,
+    "action": "CONTINUE",
+    "params": {},
+    "rules_would_do": null,
+    "rationale": "There is only a single planar basin (id 0) found across 13 xTB seeds with current geometry already at 0.025 A RMSD and plane_rms_A=0.0037, s"
+   },
+   {
+    "step": 0,
+    "pass_id": 1,
+    "event": "pass_start",
+    "trigger": null,
+    "decided_by": "llm",
+    "handover": null,
+    "action": "CONTINUE",
+    "params": {},
+    "rules_would_do": null,
+    "rationale": "Initial pass settings are appropriate with step_advisor recommending keep at maxstep=0.005 prior to the first gradient evaluation."
+   },
+   {
+    "step": 6,
+    "pass_id": 1,
+    "event": "trigger",
+    "trigger": "steps_pinned_at_cap",
+    "decided_by": "llm",
+    "handover": null,
+    "action": "SET_PARAMS",
+    "params": {
+     "optimizer": "lbfgs_mem20",
+     "maxstep": 0.01
+    },
+    "rules_would_do": null,
+    "rationale": "Steps are fully pinned with cap_saturation=1.0, energy_falling_last5=5, and curvature_ratio=0.28, so maxstep is doubled to 0.01 and optimize"
+   },
+   {
+    "step": 15,
+    "pass_id": 2,
+    "event": "pass_start",
+    "trigger": null,
+    "decided_by": "llm",
+    "handover": null,
+    "action": "CONTINUE",
+    "params": {},
+    "rules_would_do": null,
+    "rationale": "Pass 2 starts with healthy diagnostics, a curvature ratio of 0.64, and fmax at 0.0195 eV/A already satisfying the target threshold, so conti"
+   },
+   {
+    "step": 16,
+    "pass_id": 3,
+    "event": "pass_start",
+    "trigger": null,
+    "decided_by": "llm",
+    "handover": null,
+    "action": "CONTINUE",
+    "params": {},
+    "rules_would_do": null,
+    "rationale": "The current maximum force of 0.015 eV/\u00c5 already satisfies the target threshold of 0.02 eV/\u00c5, and step_advisor recommends keeping current par"
+   },
+   {
+    "step": 16,
+    "pass_id": 4,
+    "event": "pass_start",
+    "trigger": null,
+    "decided_by": "llm",
+    "handover": null,
+    "action": "CONTINUE",
+    "params": {},
+    "rules_would_do": null,
+    "rationale": "Step advisor recommends keeping current settings with a forecasted 1 step to target and planar ring geometry well maintained."
+   },
+   {
+    "step": 16,
+    "pass_id": 5,
+    "event": "pass_start",
+    "trigger": null,
+    "decided_by": "llm",
+    "handover": null,
+    "action": "CONTINUE",
+    "params": {},
+    "rules_would_do": null,
+    "rationale": "Step advisor recommends keeping current settings with a forecast of 1 step to target, and the structure remains well-aligned with the target"
+   },
+   {
+    "step": 16,
+    "pass_id": 6,
+    "event": "pass_start",
+    "trigger": null,
+    "decided_by": "llm",
+    "handover": null,
+    "action": "CONTINUE",
+    "params": {},
+    "rules_would_do": null,
+    "rationale": "Step advisor recommends keeping current parameters with a forecast of 1 step to target, while the planar structure in basin 0 is well mainta"
+   },
+   {
+    "step": 16,
+    "pass_id": 6,
+    "event": "final_check",
+    "trigger": null,
+    "decided_by": "llm",
+    "handover": null,
+    "action": "CONTINUE",
+    "params": {},
+    "rules_would_do": null,
+    "rationale": "The final geometry in basin 0 is planar with an intact bond graph and low RMSD to the reference structure, so we continue to finalize the op"
+   }
+  ]
+ },
+ "handover_conditions": {
+  "H1": "no remedy: a warning trigger fired and the rule set would do nothing about it",
+  "H2": "conflict: the rule's remedy points the opposite way from the trigger",
+  "H3": "after a failure: an action in this run was already rolled back",
+  "H4": "high stakes: more than one basin at the start, or a negative curvature at the final check"
+ }
+}
