@@ -1,8 +1,0 @@
-{
-  "gemini_usage": {
-    "calls": 22.0,
-    "ok": 22.0,
-    "latency_s": 286.1
-  },
-  "note": "waited_s is API back-off time; it is excluded from every wall-clock metric"
-}
